@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SmartLedger - Login</title>
+    <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
+</head>
+<body style="display: flex; align-items: center; justify-content: center;">
+    <div class="glass-card" style="width: 380px;">
+        <h2 style="text-align: center; color: #58a6ff; margin-bottom: 1.5rem;">⚡ SmartLedger Login</h2>
+        <div th:if="${error}" style="color: #f85149; margin-bottom: 1rem; font-size: 0.9rem;" th:text="${error}"></div>
+        <form method="post" action="/login">
+            <label>Email Address</label>
+            <input type="email" name="email" required placeholder="user@example.com">
+            <label>Password</label>
+            <input type="password" name="password" required placeholder="••••••••">
+            <button type="submit" class="btn-smart" style="width: 100%; margin-top: 10px;">Sign In</button>
+        </form>
+        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #8b949e;">
+            Don't have an account? <a href="/register" style="color: #58a6ff;">Register here</a>
+        </p>
+    </div>
+</body>
+</html>

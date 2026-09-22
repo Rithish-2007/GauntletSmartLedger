@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SmartLedger - Command Hub</title>
+    <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div th:replace="~{fragments/navbar}"></div>
+
+    <div style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <div>
+                <h1 style="margin: 0; font-size: 1.8rem;">Household Resource Command Hub</h1>
+                <p style="color: #8b949e; margin: 4px 0 0 0;">Sensorless Predictive Utility Ledger &amp; Fair Allocations</p>
+            </div>
+            <div class="glass-card" style="padding: 10px 20px; margin: 0;">
+                <span style="color: #8b949e;">Monthly Outflow: </span>
+                <span class="metric-number" style="font-size: 1.4rem;" th:text="'₹' + ${#numbers.formatDecimal(macro.totalMonthlySpend(), 1, 2)}">₹0.00</span>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <div class="glass-card">
+                <div style="color: #8b949e; font-size: 0.9rem;">⚡ Electricity Share</div>
+                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.electricitySpend(), 1, 2)}">₹0.00</div>
+                <a href="/electricity" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">View Sub-meter Split &rarr;</a>
+            </div>
+            <div class="glass-card">
+                <div style="color: #8b949e; font-size: 0.9rem;">🔥 LPG Cylinder</div>
+                <div class="metric-number" th:text="${gasForecast != null ? gasForecast.daysRemaining() + ' Days' : 'No Cylinder'}">N/A</div>
+                <div th:if="${gasForecast != null and gasForecast.refillAlert()}" class="badge-expired">Refill Recommended</div>
+                <a href="/gas" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Depletion Curve &rarr;</a>
+            </div>
+            <div class="glass-card">
+                <div style="color: #8b949e; font-size: 0.9rem;">📶 Family Telecom</div>
+                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.telecomSpend(), 1, 2)}">₹0.00</div>
+                <a href="/telecom" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Countdown Matrix &rarr;</a>
+            </div>
+            <div class="glass-card">
+                <div style="color: #8b949e; font-size: 0.9rem;">🚗 Transport Spend</div>
+                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.transportSpend(), 1, 2)}">₹0.00</div>
+                <a href="/transport" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Mileage Analytics &rarr;</a>
+            </div>
+            <div class="glass-card">
+                <div style="color: #8b949e; font-size: 0.9rem;">🛒 Grocery Burn</div>
+                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.grocerySpend(), 1, 2)}">₹0.00</div>
+                <a href="/grocery" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Categorical Split &rarr;</a>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+            <div class="glass-card">
+                <h3 style="margin-top: 0;">Macro Household Allocation</h3>
+                <canvas id="macroDonutChart" height="220"></canvas>
+            </div>
+            <div class="glass-card">
+                <h3 style="margin-top: 0;">Active LPG Cylinder Capacity</h3>
+                <div th:if="${gasForecast != null}">
+                    <p style="color: #8b949e;">Moving Average Burn Rate: <span style="color: #f0f6fc;" th:text="${#numbers.formatDecimal(gasForecast.burnRateKgPerDay(), 1, 3)} + ' kg/day'"></span></p>
+                    <p style="color: #8b949e;">Predicted Run-Out: <span style="color: #f0f6fc;" th:text="${gasForecast.predictedDepletionDate()}"></span></p>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 8px; height: 24px; overflow: hidden; margin-top: 1rem;">
+                        <div th:style="'background: #3fb950; height: 100%; width: ' + ${gasForecast.percentageRemaining()} + '%;'"></div>
+                    </div>
+                    <p style="text-align: right; color: #3fb950; font-weight: 600; margin-top: 6px;" th:text="${#numbers.formatDecimal(gasForecast.percentageRemaining(), 1, 1)} + '% Capacity'"></p>
+                </div>
+                <div th:if="${gasForecast == null}" style="color: #8b949e; text-align: center; padding: 2rem;">
+                    No active cylinder registered. <a href="/gas" style="color: #58a6ff;">Connect one now.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        fetch('/api/analytics/macro')
+            .then(res => res.json())
+            .then(data => {
+                const dist = data.percentageDistribution;
+                const ctx = document.getElementById('macroDonutChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(dist),
+                        datasets: [{
+                            data: Object.values(dist),
+                            backgroundColor: ['#58a6ff', '#f85149', '#bc8cff', '#d29922', '#3fb950']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom', labels: { color: '#f0f6fc' } } }
+                    }
+                });
+            });
+        /*]]>*/
+    </script>
+</body>
+</html>

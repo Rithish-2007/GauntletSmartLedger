@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SmartLedger - Transport &amp; Commute Mileage</title>
+    <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navbar}"></div>
+    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
+        <h2>🚗 Transport &amp; Commute Mileage Efficiency</h2>
+        <div class="glass-card">
+            <h3>Log Commute</h3>
+            <form method="post" action="/transport/add" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label>Commute Type</label>
+                    <select name="type">
+                        <option value="FUEL">Personal Vehicle (Fuel)</option>
+                        <option value="PUBLIC_TICKET">Public Transit (Bus / Train / Metro)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Person Name</label>
+                    <input type="text" name="personName" required placeholder="Driver / Commuter">
+                </div>
+                <div>
+                    <label>Distance (km)</label>
+                    <input type="number" step="0.1" name="distanceKm" required placeholder="45.0">
+                </div>
+                <div>
+                    <label>Liters Filled (Fuel only)</label>
+                    <input type="number" step="0.1" name="liters" placeholder="2.5">
+                </div>
+                <div>
+                    <label>Total Fare / Fuel Paid (₹)</label>
+                    <input type="number" step="0.1" name="totalFare" required placeholder="255.0">
+                </div>
+                <div>
+                    <label>Date</label>
+                    <input type="date" name="date">
+                </div>
+                <div style="grid-column: span 2;">
+                    <button type="submit" class="btn-smart">Record Commute</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="glass-card">
+            <h3>Trip Log &amp; Mileage Curves</h3>
+            <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #8b949e;">
+                    <th style="padding: 10px;">Date</th>
+                    <th>Type</th>
+                    <th>Person</th>
+                    <th>Distance</th>
+                    <th>Total Paid</th>
+                    <th>Mileage</th>
+                    <th>Cost/km</th>
+                </tr>
+                <tr th:each="tr : ${trips}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px;" th:text="${tr.entryDate}"></td>
+                    <td th:text="${tr.commuteType}"></td>
+                    <td th:text="${tr.personName}"></td>
+                    <td th:text="${tr.distanceKm} + ' km'"></td>
+                    <td th:text="'₹' + ${tr.totalFareCost}"></td>
+                    <td th:text="${tr.mileageCalculated != null ? #numbers.formatDecimal(tr.mileageCalculated, 1, 1) + ' km/L' : 'N/A'}"></td>
+                    <td style="color: #3fb950;" th:text="'₹' + ${#numbers.formatDecimal(tr.costPerKm, 1, 2)} + '/km'"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
