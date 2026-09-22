@@ -1,72 +1,121 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SmartLedger - Transport &amp; Commute Mileage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transport Mileage Analytics — SmartLedger Pro</title>
     <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar}"></div>
-    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
-        <h2>🚗 Transport &amp; Commute Mileage Efficiency</h2>
-        <div class="glass-card">
-            <h3>Log Commute</h3>
-            <form method="post" action="/transport/add" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div>
-                    <label>Commute Type</label>
-                    <select name="type">
-                        <option value="FUEL">Personal Vehicle (Fuel)</option>
-                        <option value="PUBLIC_TICKET">Public Transit (Bus / Train / Metro)</option>
+
+    <main class="container-hub" style="max-width: 1100px;">
+        <header style="margin-bottom: 2rem;">
+            <div class="text-eyebrow" style="color: var(--amber);">Commute Cost &amp; Fuel Telematics</div>
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: #f8fafc; margin: 0;">
+                🚗 Commute Efficiency &amp; Vehicle Mileage Deck
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                Compare true fuel efficiency (km/L) against public transit fares on an empirical cost-per-kilometer basis.
+            </p>
+        </header>
+
+        <!-- Log Commute Form -->
+        <div class="glass-panel" style="margin-bottom: 2rem; border-left: 3px solid var(--amber);">
+            <div style="margin-bottom: 1.25rem;">
+                <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Log Commute Event</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Record fuel tank-fill or public transit fare</p>
+            </div>
+
+            <form method="post" action="/transport/add" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label">Commute Mode</label>
+                    <select name="type" class="form-select">
+                        <option value="FUEL">Personal Vehicle (Fuel Tank Fill)</option>
+                        <option value="PUBLIC_TICKET">Public Transit (Metro / Bus / Train)</option>
                     </select>
                 </div>
-                <div>
-                    <label>Person Name</label>
-                    <input type="text" name="personName" required placeholder="Driver / Commuter">
+                <div class="form-group">
+                    <label class="form-label">Commuter Name</label>
+                    <input type="text" name="personName" class="form-input" required placeholder="e.g. Rithish">
                 </div>
-                <div>
-                    <label>Distance (km)</label>
-                    <input type="number" step="0.1" name="distanceKm" required placeholder="45.0">
+                <div class="form-group">
+                    <label class="form-label">Distance Travelled (km)</label>
+                    <input type="number" step="0.1" name="distanceKm" class="form-input" required placeholder="e.g. 45.0">
                 </div>
-                <div>
-                    <label>Liters Filled (Fuel only)</label>
-                    <input type="number" step="0.1" name="liters" placeholder="2.5">
+                <div class="form-group">
+                    <label class="form-label">Liters Dispensed (Fuel only)</label>
+                    <input type="number" step="0.1" name="liters" class="form-input" placeholder="e.g. 2.5">
                 </div>
-                <div>
-                    <label>Total Fare / Fuel Paid (₹)</label>
-                    <input type="number" step="0.1" name="totalFare" required placeholder="255.0">
+                <div class="form-group">
+                    <label class="form-label">Total Cost / Fare (₹)</label>
+                    <input type="number" step="0.1" name="totalFare" class="form-input" required placeholder="e.g. 255.0">
                 </div>
-                <div>
-                    <label>Date</label>
-                    <input type="date" name="date">
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" class="form-input">
                 </div>
-                <div style="grid-column: span 2;">
-                    <button type="submit" class="btn-smart">Record Commute</button>
+                <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-premium">
+                        <span>🚗 Compute Mileage &amp; Record</span>
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="glass-card">
-            <h3>Trip Log &amp; Mileage Curves</h3>
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #8b949e;">
-                    <th style="padding: 10px;">Date</th>
-                    <th>Type</th>
-                    <th>Person</th>
-                    <th>Distance</th>
-                    <th>Total Paid</th>
-                    <th>Mileage</th>
-                    <th>Cost/km</th>
-                </tr>
-                <tr th:each="tr : ${trips}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 10px;" th:text="${tr.entryDate}"></td>
-                    <td th:text="${tr.commuteType}"></td>
-                    <td th:text="${tr.personName}"></td>
-                    <td th:text="${tr.distanceKm} + ' km'"></td>
-                    <td th:text="'₹' + ${tr.totalFareCost}"></td>
-                    <td th:text="${tr.mileageCalculated != null ? #numbers.formatDecimal(tr.mileageCalculated, 1, 1) + ' km/L' : 'N/A'}"></td>
-                    <td style="color: #3fb950;" th:text="'₹' + ${#numbers.formatDecimal(tr.costPerKm, 1, 2)} + '/km'"></td>
-                </tr>
-            </table>
+        <!-- Trip Log Table -->
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Commute Efficiency Log</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Evaluated cost-per-kilometer performance</p>
+                </div>
+                <span class="pill-badge badge-neutral" th:text="${trips.size() + ' Trips Tracked'}">2 Trips</span>
+            </div>
+
+            <div class="table-container">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Mode</th>
+                            <th>Commuter</th>
+                            <th>Distance</th>
+                            <th>Total Cost</th>
+                            <th>Vehicle Mileage</th>
+                            <th>Cost per KM</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="tr : ${trips}">
+                            <td class="mono-num" th:text="${tr.entryDate}">2026-09-18</td>
+                            <td>
+                                <span th:if="${tr.commuteType.name() == 'FUEL'}" class="pill-badge badge-neutral">⛽ Fuel Tank</span>
+                                <span th:if="${tr.commuteType.name() == 'PUBLIC_TICKET'}" class="pill-badge badge-active">🚆 Transit</span>
+                            </td>
+                            <td style="color: #f8fafc; font-weight: 600;" th:text="${tr.personName}">Rithish</td>
+                            <td class="mono-num" th:text="${tr.distanceKm} + ' km'">45.0 km</td>
+                            <td class="mono-num" th:text="'₹' + ${tr.totalFareCost}">₹255.00</td>
+                            <td>
+                                <span class="mono-num" style="color: var(--cyan); font-weight: 600;" th:text="${tr.mileageCalculated != null ? #numbers.formatDecimal(tr.mileageCalculated, 1, 1) + ' km/L' : 'N/A'}">
+                                    18.0 km/L
+                                </span>
+                            </td>
+                            <td>
+                                <strong class="mono-num" style="color: var(--emerald);" th:text="'₹' + ${#numbers.formatDecimal(tr.costPerKm, 1, 2)} + '/km'">
+                                    ₹5.67/km
+                                </strong>
+                            </td>
+                        </tr>
+                        <tr th:if="${trips.isEmpty()}">
+                            <td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                No commute trips logged yet. Record your vehicle or transit trip above.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </main>
 </body>
 </html>

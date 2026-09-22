@@ -1,58 +1,137 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SmartLedger - LPG Burn Rate &amp; Depletion</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPG Gas Depletion Forecaster — SmartLedger Pro</title>
     <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar}"></div>
-    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
-        <h2>🔥 LPG Cylinder Burn-Rate &amp; Depletion Forecast</h2>
-        <div class="glass-card">
-            <h3>Connect New Cylinder</h3>
-            <form method="post" action="/gas/connect" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+    <main class="container-hub" style="max-width: 1100px;">
+        <header style="margin-bottom: 2rem;">
+            <div class="text-eyebrow" style="color: var(--emerald);">Sensorless Thermodynamic Forecaster</div>
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: #f8fafc; margin: 0;">
+                🔥 LPG Cylinder Depletion &amp; Burn-Rate Telemetry
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                Historical linear regression estimation to predict the exact run-out date and refill notification threshold.
+            </p>
+        </header>
+
+        <!-- Active Cylinder Horizon Card -->
+        <div th:if="${forecast != null}" class="glass-panel" style="margin-bottom: 2rem; border-left: 3px solid var(--emerald); background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(14, 19, 31, 0.8) 100%);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                 <div>
-                    <label>Weight (kg)</label>
-                    <input type="number" step="0.1" name="weightKg" value="14.2" required>
+                    <span class="text-eyebrow">Active Cylinder Telemetry</span>
+                    <h2 style="font-size: 1.5rem; font-weight: 800; margin: 0.2rem 0; color: #f8fafc;" th:text="${forecast.daysRemaining() + ' Days Capacity Remaining'}">
+                        32 Days Remaining
+                    </h2>
                 </div>
                 <div>
-                    <label>Booking Cost (₹)</label>
-                    <input type="number" step="0.1" name="bookingCost" required placeholder="850.0">
+                    <span th:if="${forecast.refillAlert()}" class="pill-badge badge-expired">Critical Refill Window</span>
+                    <span th:if="${!forecast.refillAlert()}" class="pill-badge badge-active">Capacity Stable</span>
                 </div>
-                <div>
-                    <label>Connection Date</label>
-                    <input type="date" name="connectedDate">
+            </div>
+
+            <div style="margin: 1.25rem 0;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+                    <span>Burn Depletion Level</span>
+                    <span class="mono-num" style="color: var(--emerald); font-weight: 700;" th:text="${#numbers.formatDecimal(forecast.percentageRemaining(), 1, 1)} + '%'">84.2%</span>
                 </div>
-                <div style="display: flex; align-items: flex-end;">
-                    <button type="submit" class="btn-smart" style="width: 100%;">Connect Cylinder</button>
+                <div class="progress-track" style="height: 10px;">
+                    <div class="progress-fill progress-emerald" th:style="'width: ' + ${forecast.percentageRemaining()} + '%;'"></div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div style="background: rgba(0,0,0,0.3); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div class="text-eyebrow">Predicted Depletion Date</div>
+                    <div class="mono-num" style="color: #f8fafc; font-weight: 700; font-size: 1.1rem;" th:text="${forecast.predictedDepletionDate()}">2026-10-15</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div class="text-eyebrow">Burn Velocity</div>
+                    <div class="mono-num" style="color: #f8fafc; font-weight: 700; font-size: 1.1rem;" th:text="${#numbers.formatDecimal(forecast.burnRateKgPerDay(), 1, 3)} + ' kg/day'">0.405 kg/day</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.3); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div class="text-eyebrow">Estimated Days Left</div>
+                    <div class="mono-num" style="color: var(--emerald); font-weight: 700; font-size: 1.1rem;" th:text="${forecast.daysRemaining()}">32</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Connect Form -->
+        <div class="glass-panel" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.25rem;">
+                <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Register / Connect Cylinder</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Connect a fresh domestic cylinder to begin tracking</p>
+            </div>
+
+            <form method="post" action="/gas/connect" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label">Cylinder Net Weight (kg)</label>
+                    <input type="number" step="0.1" name="weightKg" value="14.2" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Booking / Delivery Cost (₹)</label>
+                    <input type="number" step="0.1" name="bookingCost" class="form-input" required placeholder="850.0">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Connection Date</label>
+                    <input type="date" name="connectedDate" class="form-input">
+                </div>
+                <div style="display: flex; align-items: flex-end; margin-bottom: 1.25rem;">
+                    <button type="submit" class="btn-premium" style="width: 100%;">
+                        <span>🔥 Connect New Cylinder</span>
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="glass-card">
-            <h3>Cylinder Ledger</h3>
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #8b949e;">
-                    <th style="padding: 10px;">Connected</th>
-                    <th>Finished</th>
-                    <th>Weight</th>
-                    <th>Cost</th>
-                    <th>Burn Rate</th>
-                    <th>Status</th>
-                </tr>
-                <tr th:each="c : ${records}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 10px;" th:text="${c.connectedDate}"></td>
-                    <td th:text="${c.finishedDate != null ? c.finishedDate : 'Active'}"></td>
-                    <td th:text="${c.cylinderWeightKg} + ' kg'"></td>
-                    <td th:text="'₹' + ${c.bookingCost}"></td>
-                    <td th:text="${c.burnRatePerDay != null ? #numbers.formatDecimal(c.burnRatePerDay, 1, 3) + ' kg/day' : 'Calculating...'}"></td>
-                    <td>
-                        <span th:if="${c.isActive}" class="badge-active">ACTIVE</span>
-                        <span th:if="${!c.isActive}" style="color: #8b949e;">Finished</span>
-                    </td>
-                </tr>
-            </table>
+        <!-- Historical Cylinder Ledger -->
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Historical Cylinder Cycles</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Depletion logs used to train moving-average consumption rates</p>
+                </div>
+                <span class="pill-badge badge-neutral" th:text="${records.size() + ' Total Cylinders'}">2 Cylinders</span>
+            </div>
+
+            <div class="table-container">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Connection Date</th>
+                            <th>Finished Date</th>
+                            <th>Net Weight</th>
+                            <th>Booking Cost</th>
+                            <th>Calculated Burn Rate</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${records}">
+                            <td class="mono-num" th:text="${c.connectedDate}">2026-08-06</td>
+                            <td class="mono-num" th:text="${c.finishedDate != null ? c.finishedDate : 'Active in use'}">Active in use</td>
+                            <td class="mono-num" th:text="${c.cylinderWeightKg} + ' kg'">14.2 kg</td>
+                            <td class="mono-num" th:text="'₹' + ${c.bookingCost}">₹850.00</td>
+                            <td class="mono-num" style="color: var(--cyan);" th:text="${c.burnRatePerDay != null ? #numbers.formatDecimal(c.burnRatePerDay, 1, 3) + ' kg/day' : 'Calculating...'}">0.405 kg/day</td>
+                            <td>
+                                <span th:if="${c.isActive}" class="pill-badge badge-active">Active</span>
+                                <span th:if="${!c.isActive}" class="pill-badge badge-neutral">Depleted</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${records.isEmpty()}">
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                No cylinders connected yet. Register your current cylinder above.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </main>
 </body>
 </html>

@@ -1,14 +1,55 @@
-<nav style="background: rgba(22, 27, 34, 0.9); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;" xmlns:th="http://www.thymeleaf.org">
-    <div style="font-weight: 700; font-size: 1.25rem; color: #58a6ff;">
-        ⚡ SmartLedger
+<nav xmlns:th="http://www.thymeleaf.org" style="background: rgba(10, 14, 23, 0.82); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.08); position: sticky; top: 0; z-index: 100;">
+    <div style="max-width: 1320px; margin: 0 auto; padding: 0.85rem 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+        
+        <!-- Brand Identity -->
+        <a href="/dashboard" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #0ea5e9, #10b981); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 16px rgba(14, 165, 233, 0.45); color: #fff; font-weight: 800; font-size: 1.1rem;">
+                ⚡
+            </div>
+            <div>
+                <div style="font-weight: 800; font-size: 1.15rem; color: #f8fafc; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.4rem;">
+                    SmartLedger <span style="font-size: 0.65rem; font-weight: 700; background: rgba(0, 240, 255, 0.12); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); padding: 2px 6px; border-radius: 4px; letter-spacing: 0.08em;">PRO</span>
+                </div>
+                <div style="font-size: 0.7rem; color: #64748b; font-weight: 500;">Resource Intelligence Suite</div>
+            </div>
+        </a>
+
+        <!-- Pillar Navigation -->
+        <div style="display: flex; gap: 0.5rem; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 4px 6px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06);">
+            <a href="/dashboard" class="nav-item-luxury">📊 Hub</a>
+            <a href="/electricity" class="nav-item-luxury">⚡ Electricity</a>
+            <a href="/gas" class="nav-item-luxury">🔥 LPG Gas</a>
+            <a href="/telecom" class="nav-item-luxury">📶 Telecom</a>
+            <a href="/transport" class="nav-item-luxury">🚗 Transport</a>
+            <a href="/grocery" class="nav-item-luxury">🛒 Groceries</a>
+        </div>
+
+        <!-- Right Side: Live Indicator & User Menu -->
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="pill-badge badge-active" style="display: none; @media(min-width: 768px){display: inline-flex;}">
+                <span class="pulsing-dot"></span>
+                <span>Active Ledger</span>
+            </div>
+            <a href="/logout" class="btn-ghost" style="color: #fb7185; border-color: rgba(244, 63, 94, 0.2);">
+                <span>Sign Out</span>
+                <span style="font-size: 0.9rem;">&rarr;</span>
+            </a>
+        </div>
     </div>
-    <div style="display: flex; gap: 1.5rem; align-items: center;">
-        <a href="/dashboard" style="color: #f0f6fc; text-decoration: none;">Dashboard</a>
-        <a href="/electricity" style="color: #8b949e; text-decoration: none;">Electricity</a>
-        <a href="/gas" style="color: #8b949e; text-decoration: none;">LPG Gas</a>
-        <a href="/telecom" style="color: #8b949e; text-decoration: none;">Telecom</a>
-        <a href="/transport" style="color: #8b949e; text-decoration: none;">Transport</a>
-        <a href="/grocery" style="color: #8b949e; text-decoration: none;">Groceries</a>
-        <a href="/logout" style="color: #f85149; text-decoration: none;">Logout</a>
-    </div>
+
+    <style>
+        .nav-item-luxury {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            padding: 0.45rem 0.9rem;
+            border-radius: 8px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-item-luxury:hover {
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.08);
+        }
+    </style>
 </nav>

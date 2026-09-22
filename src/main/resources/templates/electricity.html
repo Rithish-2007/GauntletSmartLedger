@@ -1,57 +1,107 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SmartLedger - Electricity Sub-meter Split</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Shared Fair-Split — SmartLedger Pro</title>
     <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar}"></div>
-    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
-        <h2>⚡ Electricity Shared Sub-Meter Fair-Split</h2>
-        <div class="glass-card">
-            <h3>Log Billing Cycle</h3>
-            <form method="post" action="/electricity/add" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+    <main class="container-hub" style="max-width: 1100px;">
+        <!-- Header -->
+        <header style="margin-bottom: 2rem;">
+            <div class="text-eyebrow" style="color: var(--cyan);">TNEB Slab Mathematical Engine</div>
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: #f8fafc; margin: 0;">
+                ⚡ Shared Meter Fair-Split &amp; Tariff Audit
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                Eliminate sub-tenant disputes by calculating proportional bracket ratios instead of arbitrary flat rates.
+            </p>
+        </header>
+
+        <!-- Entry Form Glass Panel -->
+        <div class="glass-panel" style="margin-bottom: 2rem; border-left: 3px solid var(--cyan);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                 <div>
-                    <label>Billing Month (YYYY-MM)</label>
-                    <input type="text" name="billingMonth" required placeholder="2026-09">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Log Billing Cycle</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Enter board meter totals and private sub-meter units</p>
                 </div>
-                <div>
-                    <label>Master EB Units (Board Reading)</label>
-                    <input type="number" step="0.1" name="masterUnits" required placeholder="350.0">
+                <span class="pill-badge badge-neutral">TNEB Progressive Bracket</span>
+            </div>
+
+            <form method="post" action="/electricity/add" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label">Billing Cycle (YYYY-MM)</label>
+                    <input type="text" name="billingMonth" class="form-input" required placeholder="e.g. 2026-10">
                 </div>
-                <div>
-                    <label>My Sub-Meter Units</label>
-                    <input type="number" step="0.1" name="myUnits" required placeholder="140.0">
+                <div class="form-group">
+                    <label class="form-label">Master EB Units (Board Reading)</label>
+                    <input type="number" step="0.1" name="masterUnits" class="form-input" required placeholder="e.g. 420.0">
                 </div>
-                <div>
-                    <label>Other Tenants Sub-Meter Units</label>
-                    <input type="number" step="0.1" name="otherUnits" placeholder="210.0">
+                <div class="form-group">
+                    <label class="form-label">My Sub-Meter Units</label>
+                    <input type="number" step="0.1" name="myUnits" class="form-input" required placeholder="e.g. 180.0">
                 </div>
-                <div style="grid-column: span 2;">
-                    <button type="submit" class="btn-smart">Calculate &amp; Record Share</button>
+                <div class="form-group">
+                    <label class="form-label">Other Tenant Sub-Meter Units</label>
+                    <input type="number" step="0.1" name="otherUnits" class="form-input" placeholder="e.g. 240.0">
+                </div>
+                <div style="grid-column: span 2; display: flex; justify-content: flex-end; margin-top: 0.5rem;">
+                    <button type="submit" class="btn-premium">
+                        <span>⚡ Compute &amp; Record Fair Share</span>
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="glass-card">
-            <h3>Historical Split Records</h3>
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #8b949e;">
-                    <th style="padding: 10px;">Month</th>
-                    <th>Master EB</th>
-                    <th>My Sub-Meter</th>
-                    <th>Total Board Bill</th>
-                    <th>My Fair Share</th>
-                </tr>
-                <tr th:each="r : ${records}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 10px;" th:text="${r.billingMonth}"></td>
-                    <td th:text="${r.masterEbUnits} + ' kWh'"></td>
-                    <td th:text="${r.mySubmeterUnits} + ' kWh'"></td>
-                    <td th:text="'₹' + ${#numbers.formatDecimal(r.totalEbAmount, 1, 2)}"></td>
-                    <td style="color: #3fb950; font-weight: 600;" th:text="'₹' + ${#numbers.formatDecimal(r.calculatedMyShare, 1, 2)}"></td>
-                </tr>
-            </table>
+        <!-- History Records Table Panel -->
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Billing History &amp; Settlement Audits</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Verifiable ledger records with calculated effective rates</p>
+                </div>
+                <span class="pill-badge badge-active" th:text="${records.size() + ' Recorded Cycles'}">2 Records</span>
+            </div>
+
+            <div class="table-container">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Master EB Total</th>
+                            <th>My Sub-Meter</th>
+                            <th>Board Bill Total</th>
+                            <th>Proportional Fair Share</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="r : ${records}">
+                            <td>
+                                <strong style="color: #f8fafc;" th:text="${r.billingMonth}">2026-09</strong>
+                            </td>
+                            <td class="mono-num" th:text="${r.masterEbUnits} + ' kWh'">420.0 kWh</td>
+                            <td class="mono-num" style="color: var(--cyan);" th:text="${r.mySubmeterUnits} + ' kWh'">180.0 kWh</td>
+                            <td class="mono-num" th:text="'₹' + ${#numbers.formatDecimal(r.totalEbAmount, 1, 2)}">₹1,265.00</td>
+                            <td class="mono-num" style="color: var(--emerald); font-weight: 700; font-size: 0.95rem;" th:text="'₹' + ${#numbers.formatDecimal(r.calculatedMyShare, 1, 2)}">
+                                ₹542.14
+                            </td>
+                            <td>
+                                <span class="pill-badge badge-active">Settled</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${records.isEmpty()}">
+                            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                No electricity billing cycles recorded yet. Enter your first meter reading above.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </main>
 </body>
 </html>

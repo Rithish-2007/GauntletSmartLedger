@@ -1,74 +1,145 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SmartLedger - Grocery Categorical Burn</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery Categorical Burn — SmartLedger Pro</title>
     <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
 </head>
 <body>
     <div th:replace="~{fragments/navbar}"></div>
-    <div style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
-        <h2>🛒 Domestic Grocery &amp; Essential Spend</h2>
-        <div class="glass-card">
-            <h3>Log Purchase</h3>
-            <form method="post" action="/grocery/add" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+    <main class="container-hub" style="max-width: 1100px;">
+        <header style="margin-bottom: 2rem;">
+            <div class="text-eyebrow" style="color: var(--blue);">Household Nutritional &amp; Staple Budget</div>
+            <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; color: #f8fafc; margin: 0;">
+                🛒 Domestic Grocery &amp; Categorical Burn
+            </h1>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+                Segregate non-negotiable staples and fresh dairy from impulse discretionary spending.
+            </p>
+        </header>
+
+        <!-- Budget Allocation Index Summary -->
+        <div class="glass-panel" th:if="${summary != null}" style="margin-bottom: 2rem; border-left: 3px solid var(--blue);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
                 <div>
-                    <label>Store Name</label>
-                    <input type="text" name="storeName" placeholder="Supermarket / Local Store">
+                    <span class="text-eyebrow">Pantry Health Index</span>
+                    <h2 style="font-size: 1.4rem; font-weight: 800; margin: 0.2rem 0; color: #f8fafc;">
+                        Essential vs. Discretionary Allocation
+                    </h2>
                 </div>
-                <div>
-                    <label>Category</label>
-                    <select name="category">
-                        <option value="ESSENTIAL_STAPLE">Essential Staple (Grains, Oil)</option>
-                        <option value="DAIRY_PRODUCE">Dairy &amp; Produce (Milk, Veggies)</option>
-                        <option value="HOUSEHOLD_CARE">Household Care (Cleaning, Soap)</option>
-                        <option value="SNACKS_DISCRETIONARY">Snacks &amp; Discretionary</option>
+                <div class="pill-badge badge-active">
+                    <span th:text="${#numbers.formatDecimal(summary.essentialPercentage(), 1, 1)} + '% Essential'">80.0% Essential</span>
+                </div>
+            </div>
+
+            <div style="margin: 1.25rem 0;">
+                <div class="progress-track" style="height: 10px;">
+                    <div class="progress-fill progress-cyan" th:style="'width: ' + ${summary.essentialPercentage()} + '%;'"></div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.25rem;">
+                <div style="background: rgba(0,0,0,0.25); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div class="text-eyebrow">Total Grocery Outflow</div>
+                    <div class="mono-num" style="color: #f8fafc; font-weight: 700; font-size: 1.1rem;" th:text="'₹' + ${#numbers.formatDecimal(summary.totalSpend(), 1, 2)}">₹2,180.00</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.25); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div class="text-eyebrow">Essential Staples &amp; Dairy</div>
+                    <div class="mono-num" style="color: var(--emerald); font-weight: 700; font-size: 1.1rem;" th:text="'₹' + ${#numbers.formatDecimal(summary.essentialSpend(), 1, 2)}">₹1,830.00</div>
+                </div>
+                <div style="background: rgba(0,0,0,0.25); padding: 0.85rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                    <div class="text-eyebrow">Discretionary &amp; Snacks</div>
+                    <div class="mono-num" style="color: var(--rose); font-weight: 700; font-size: 1.1rem;" th:text="'₹' + ${#numbers.formatDecimal(summary.discretionarySpend(), 1, 2)}">₹350.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Purchase Form -->
+        <div class="glass-panel" style="margin-bottom: 2rem;">
+            <div style="margin-bottom: 1.25rem;">
+                <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Log Grocery Purchase</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Add store receipt line items with categorical tagging</p>
+            </div>
+
+            <form method="post" action="/grocery/add" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+                <div class="form-group">
+                    <label class="form-label">Store / Market Name</label>
+                    <input type="text" name="storeName" class="form-input" placeholder="e.g. Reliance Fresh, Local Mart">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select name="category" class="form-select">
+                        <option value="ESSENTIAL_STAPLE">Essential Staple (Grains, Flours, Pulses)</option>
+                        <option value="DAIRY_PRODUCE">Dairy &amp; Fresh Produce (Milk, Curd, Veggies)</option>
+                        <option value="HOUSEHOLD_CARE">Household Care &amp; Hygiene</option>
+                        <option value="SNACKS_DISCRETIONARY">Snacks &amp; Discretionary Delights</option>
                     </select>
                 </div>
-                <div>
-                    <label>Total Amount (₹)</label>
-                    <input type="number" step="0.1" name="amount" required placeholder="850.0">
+                <div class="form-group">
+                    <label class="form-label">Amount Paid (₹)</label>
+                    <input type="number" step="0.1" name="amount" class="form-input" required placeholder="e.g. 1450.0">
                 </div>
-                <div>
-                    <label>Date</label>
-                    <input type="date" name="date">
+                <div class="form-group">
+                    <label class="form-label">Purchase Date</label>
+                    <input type="date" name="date" class="form-input">
                 </div>
-                <div style="grid-column: span 2;">
-                    <label>Notes / Items</label>
-                    <input type="text" name="notes" placeholder="Rice 5kg, Sunflower oil 2L">
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label class="form-label">Receipt Item Notes</label>
+                    <input type="text" name="notes" class="form-input" placeholder="e.g. Rice 10kg, Wheat flour 5kg, Dal 2kg">
                 </div>
-                <div style="grid-column: span 2;">
-                    <button type="submit" class="btn-smart">Add Purchase</button>
+                <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+                    <button type="submit" class="btn-premium">
+                        <span>🛒 Record Grocery Purchase</span>
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="glass-card" th:if="${summary != null}">
-            <h3>Budget Allocation Index</h3>
-            <p>Essential Ratio: <span style="color: #3fb950; font-weight: 700; font-size: 1.2rem;" th:text="${#numbers.formatDecimal(summary.essentialPercentage(), 1, 1)} + '%'"></span></p>
-            <div style="background: rgba(255,255,255,0.1); border-radius: 8px; height: 16px; overflow: hidden; margin-top: 8px;">
-                <div th:style="'background: #3fb950; height: 100%; width: ' + ${summary.essentialPercentage()} + '%;'"></div>
+        <!-- Recent Purchases Table -->
+        <div class="glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <div>
+                    <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Recent Grocery Receipts</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.15rem 0 0 0;">Historical domestic inventory logs</p>
+                </div>
+                <span class="pill-badge badge-neutral" th:text="${records.size() + ' Receipts'}">3 Receipts</span>
+            </div>
+
+            <div class="table-container">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Store</th>
+                            <th>Category</th>
+                            <th>Total Amount</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="g : ${records}">
+                            <td class="mono-num" th:text="${g.purchaseDate}">2026-09-10</td>
+                            <td style="color: #f8fafc; font-weight: 600;" th:text="${g.storeName}">Reliance Fresh</td>
+                            <td>
+                                <span th:if="${g.category.name() == 'ESSENTIAL_STAPLE'}" class="pill-badge badge-active">🌾 Staple</span>
+                                <span th:if="${g.category.name() == 'DAIRY_PRODUCE'}" class="pill-badge badge-soon">🥛 Dairy</span>
+                                <span th:if="${g.category.name() == 'SNACKS_DISCRETIONARY'}" class="pill-badge badge-expired">🍪 Treats</span>
+                                <span th:if="${g.category.name() == 'HOUSEHOLD_CARE'}" class="pill-badge badge-neutral">🧼 Household</span>
+                            </td>
+                            <td class="mono-num" style="color: var(--cyan); font-weight: 700;" th:text="'₹' + ${#numbers.formatDecimal(g.totalAmount, 1, 2)}">₹1,450.00</td>
+                            <td style="color: var(--text-muted); font-size: 0.8rem;" th:text="${g.receiptNotes}">Rice 10kg</td>
+                        </tr>
+                        <tr th:if="${records.isEmpty()}">
+                            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                                No grocery receipts recorded yet. Log your first purchase above.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <div class="glass-card">
-            <h3>Recent Grocery Purchases</h3>
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #8b949e;">
-                    <th style="padding: 10px;">Date</th>
-                    <th>Store</th>
-                    <th>Category</th>
-                    <th>Amount</th>
-                    <th>Notes</th>
-                </tr>
-                <tr th:each="g : ${records}" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                    <td style="padding: 10px;" th:text="${g.purchaseDate}"></td>
-                    <td th:text="${g.storeName}"></td>
-                    <td th:text="${g.category}"></td>
-                    <td style="color: #58a6ff; font-weight: 600;" th:text="'₹' + ${g.totalAmount}"></td>
-                    <td style="color: #8b949e;" th:text="${g.receiptNotes}"></td>
-                </tr>
-            </table>
-        </div>
-    </div>
+    </main>
 </body>
 </html>

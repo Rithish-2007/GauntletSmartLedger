@@ -1,98 +1,343 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SmartLedger - Command Hub</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLedger Pro — Executive Resource Hub</title>
     <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
+    <!-- Executive Floating Navbar -->
     <div th:replace="~{fragments/navbar}"></div>
 
-    <div style="max-width: 1200px; margin: 2rem auto; padding: 0 1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <main class="container-hub">
+        <!-- Hero Header -->
+        <header style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h1 style="margin: 0; font-size: 1.8rem;">Household Resource Command Hub</h1>
-                <p style="color: #8b949e; margin: 4px 0 0 0;">Sensorless Predictive Utility Ledger &amp; Fair Allocations</p>
+                <div class="text-eyebrow" style="color: var(--cyan); display: flex; align-items: center; gap: 0.4rem;">
+                    <span class="pulsing-dot" style="background: var(--cyan); box-shadow: 0 0 8px var(--cyan);"></span>
+                    Household Command &amp; Predictive Analytics
+                </div>
+                <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: -0.03em; margin: 0; color: #f8fafc;" th:text="${user != null ? 'Welcome, ' + user.fullName : 'Executive Dashboard'}">
+                    Welcome, Rithish Kumar
+                </h1>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.35rem;">
+                    Sensorless utility optimization, fair sub-meter allocations &amp; depletion forecasting.
+                </p>
             </div>
-            <div class="glass-card" style="padding: 10px 20px; margin: 0;">
-                <span style="color: #8b949e;">Monthly Outflow: </span>
-                <span class="metric-number" style="font-size: 1.4rem;" th:text="'₹' + ${#numbers.formatDecimal(macro.totalMonthlySpend(), 1, 2)}">₹0.00</span>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
-            <div class="glass-card">
-                <div style="color: #8b949e; font-size: 0.9rem;">⚡ Electricity Share</div>
-                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.electricitySpend(), 1, 2)}">₹0.00</div>
-                <a href="/electricity" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">View Sub-meter Split &rarr;</a>
-            </div>
-            <div class="glass-card">
-                <div style="color: #8b949e; font-size: 0.9rem;">🔥 LPG Cylinder</div>
-                <div class="metric-number" th:text="${gasForecast != null ? gasForecast.daysRemaining() + ' Days' : 'No Cylinder'}">N/A</div>
-                <div th:if="${gasForecast != null and gasForecast.refillAlert()}" class="badge-expired">Refill Recommended</div>
-                <a href="/gas" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Depletion Curve &rarr;</a>
-            </div>
-            <div class="glass-card">
-                <div style="color: #8b949e; font-size: 0.9rem;">📶 Family Telecom</div>
-                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.telecomSpend(), 1, 2)}">₹0.00</div>
-                <a href="/telecom" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Countdown Matrix &rarr;</a>
-            </div>
-            <div class="glass-card">
-                <div style="color: #8b949e; font-size: 0.9rem;">🚗 Transport Spend</div>
-                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.transportSpend(), 1, 2)}">₹0.00</div>
-                <a href="/transport" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Mileage Analytics &rarr;</a>
-            </div>
-            <div class="glass-card">
-                <div style="color: #8b949e; font-size: 0.9rem;">🛒 Grocery Burn</div>
-                <div class="metric-number" th:text="'₹' + ${#numbers.formatDecimal(macro.grocerySpend(), 1, 2)}">₹0.00</div>
-                <a href="/grocery" style="color: #58a6ff; font-size: 0.8rem; text-decoration: none;">Categorical Split &rarr;</a>
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
-            <div class="glass-card">
-                <h3 style="margin-top: 0;">Macro Household Allocation</h3>
-                <canvas id="macroDonutChart" height="220"></canvas>
-            </div>
-            <div class="glass-card">
-                <h3 style="margin-top: 0;">Active LPG Cylinder Capacity</h3>
-                <div th:if="${gasForecast != null}">
-                    <p style="color: #8b949e;">Moving Average Burn Rate: <span style="color: #f0f6fc;" th:text="${#numbers.formatDecimal(gasForecast.burnRateKgPerDay(), 1, 3)} + ' kg/day'"></span></p>
-                    <p style="color: #8b949e;">Predicted Run-Out: <span style="color: #f0f6fc;" th:text="${gasForecast.predictedDepletionDate()}"></span></p>
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 8px; height: 24px; overflow: hidden; margin-top: 1rem;">
-                        <div th:style="'background: #3fb950; height: 100%; width: ' + ${gasForecast.percentageRemaining()} + '%;'"></div>
+            
+            <div class="glass-panel" style="padding: 0.85rem 1.75rem; border-color: rgba(0, 240, 255, 0.25); display: flex; align-items: center; gap: 1.25rem;">
+                <div>
+                    <div class="text-eyebrow">Aggregate Outflow</div>
+                    <div class="text-display mono-num" style="color: var(--cyan); font-size: 1.75rem;" th:text="'₹' + ${#numbers.formatDecimal(macro.totalMonthlySpend(), 1, 2)}">
+                        ₹0.00
                     </div>
-                    <p style="text-align: right; color: #3fb950; font-weight: 600; margin-top: 6px;" th:text="${#numbers.formatDecimal(gasForecast.percentageRemaining(), 1, 1)} + '% Capacity'"></p>
                 </div>
-                <div th:if="${gasForecast == null}" style="color: #8b949e; text-align: center; padding: 2rem;">
-                    No active cylinder registered. <a href="/gas" style="color: #58a6ff;">Connect one now.</a>
+                <div class="pill-badge badge-active" style="height: fit-content;">
+                    <span>Active Cycle</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </header>
 
+        <!-- Bento Grid: Top 5 Pillar KPI Cards -->
+        <section class="bento-grid" style="margin-bottom: 1.75rem;">
+            <!-- Electricity KPI -->
+            <div class="col-span-12 col-span-4 glass-panel" style="border-top: 2px solid var(--cyan);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span class="text-eyebrow">⚡ Electricity (Fair Share)</span>
+                    <span class="pill-badge badge-neutral" style="font-size: 0.7rem;">Sub-meter Split</span>
+                </div>
+                <div class="text-display mono-num" style="margin: 0.6rem 0; color: #f8fafc;" th:text="'₹' + ${#numbers.formatDecimal(macro.electricitySpend(), 1, 2)}">
+                    ₹0.00
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">TNEB Slab Optimization</span>
+                    <a href="/electricity" class="btn-ghost" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Calculate &rarr;</a>
+                </div>
+            </div>
+
+            <!-- LPG Gas KPI -->
+            <div class="col-span-12 col-span-4 glass-panel" style="border-top: 2px solid var(--emerald);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span class="text-eyebrow">🔥 LPG Gas Horizon</span>
+                    <span th:if="${gasForecast != null and gasForecast.refillAlert()}" class="pill-badge badge-expired">Refill Alert</span>
+                    <span th:if="${gasForecast != null and !gasForecast.refillAlert()}" class="pill-badge badge-active">Optimal</span>
+                    <span th:if="${gasForecast == null}" class="pill-badge badge-neutral">Standby</span>
+                </div>
+                <div class="text-display mono-num" style="margin: 0.6rem 0; color: #f8fafc;" th:text="${gasForecast != null ? gasForecast.daysRemaining() + ' Days' : 'No Cylinder'}">
+                    0 Days
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);" th:text="${gasForecast != null ? #numbers.formatDecimal(gasForecast.burnRateKgPerDay(), 1, 3) + ' kg/day' : 'Depletion model active'}">0.40 kg/day</span>
+                    <a href="/gas" class="btn-ghost" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Telemetry &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Family Telecom KPI -->
+            <div class="col-span-12 col-span-4 glass-panel" style="border-top: 2px solid var(--purple);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <span class="text-eyebrow">📶 Telecom Validity</span>
+                    <span class="pill-badge badge-neutral" style="font-size: 0.7rem;" th:text="${telecomMatrix.size() + ' Lines Tracked'}">3 Lines</span>
+                </div>
+                <div class="text-display mono-num" style="margin: 0.6rem 0; color: #f8fafc;" th:text="'₹' + ${#numbers.formatDecimal(macro.telecomSpend(), 1, 2)}">
+                    ₹0.00
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Family Plan Matrix</span>
+                    <a href="/telecom" class="btn-ghost" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">Manage SIMs &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Middle Row: Analytical Visualizations Deck -->
+        <section class="bento-grid" style="margin-bottom: 1.75rem;">
+            <!-- Spline Area / Bar Chart -->
+            <div class="col-span-12 col-span-8 glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                        <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Resource Allocation Architecture</h2>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">Relative spend velocity across utility dimensions</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <span class="pill-badge badge-neutral" style="cursor: pointer;" onclick="toggleChartType('bar')">Bar</span>
+                        <span class="pill-badge badge-active" style="cursor: pointer;" onclick="toggleChartType('pie')">Ratio</span>
+                    </div>
+                </div>
+                <div style="height: 290px; position: relative;">
+                    <canvas id="macroBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Doughnut Ratio Chart -->
+            <div class="col-span-12 col-span-4 glass-panel">
+                <div style="margin-bottom: 1.25rem;">
+                    <h2 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: #f8fafc;">Spend Composition</h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">Percentage distribution of household burn</p>
+                </div>
+                <div style="height: 220px; position: relative; display: flex; align-items: center; justify-content: center;">
+                    <canvas id="macroDonutChart"></canvas>
+                </div>
+                <div id="chartLegendGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 1rem; font-size: 0.75rem;">
+                    <!-- Populated dynamically via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Row: Real-time Telemetry & Family Matrix -->
+        <section class="bento-grid">
+            <!-- Active LPG Capacity Gauge -->
+            <div class="col-span-12 col-span-6 glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">LPG Cylinder Telemetry Gauge</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">Sensorless moving-average burn estimation</p>
+                    </div>
+                    <span th:if="${gasForecast != null and gasForecast.refillAlert()}" class="pill-badge badge-expired">Critical Refill Zone</span>
+                    <span th:if="${gasForecast != null and !gasForecast.refillAlert()}" class="pill-badge badge-active">Capacity Stable</span>
+                </div>
+
+                <div th:if="${gasForecast != null}">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.85rem; color: var(--text-secondary);">Remaining Mass</span>
+                        <span class="mono-num" style="font-size: 1.1rem; font-weight: 700; color: var(--emerald);" th:text="${#numbers.formatDecimal(gasForecast.percentageRemaining(), 1, 1)} + '%'">100%</span>
+                    </div>
+                    <div class="progress-track" style="height: 12px; margin-bottom: 1.25rem;">
+                        <div class="progress-fill progress-emerald" th:style="'width: ' + ${gasForecast.percentageRemaining()} + '%;'"></div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: rgba(0,0,0,0.25); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                        <div>
+                            <div class="text-eyebrow">Estimated Depletion</div>
+                            <div class="mono-num" style="color: #f8fafc; font-weight: 600; font-size: 0.95rem;" th:text="${gasForecast.predictedDepletionDate()}">2026-10-15</div>
+                        </div>
+                        <div>
+                            <div class="text-eyebrow">Velocity / Burn Rate</div>
+                            <div class="mono-num" style="color: #f8fafc; font-weight: 600; font-size: 0.95rem;" th:text="${#numbers.formatDecimal(gasForecast.burnRateKgPerDay(), 1, 3)} + ' kg/day'">0.405 kg/day</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${gasForecast == null}" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-muted);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔥</div>
+                    <div>No active cylinder currently registered.</div>
+                    <a href="/gas" class="btn-premium" style="margin-top: 1rem; font-size: 0.8rem;">Connect New Cylinder</a>
+                </div>
+            </div>
+
+            <!-- Telecom Live Validity Matrix -->
+            <div class="col-span-12 col-span-6 glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                    <div>
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Family Telecom Matrix</h3>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">Zero-blackout multi-SIM recharge timeline</p>
+                    </div>
+                    <a href="/telecom" class="btn-ghost" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">+ Add Plan</a>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div th:each="t : ${telecomMatrix}" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.3); color: var(--purple); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem;" th:text="${#strings.substring(t.familyMemberName, 0, 1)}">
+                                R
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 0.9rem; color: #f8fafc;" th:text="${t.familyMemberName}">Rithish</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);" th:text="${t.serviceProvider + ' • ₹' + t.planAmount}">Jio • ₹719</div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right;">
+                            <div style="margin-bottom: 0.25rem;">
+                                <span th:if="${t.status.name() == 'ACTIVE'}" class="pill-badge badge-active">Active</span>
+                                <span th:if="${t.status.name() == 'EXPIRING_SOON'}" class="pill-badge badge-soon">Expiring Soon</span>
+                                <span th:if="${t.status.name() == 'EXPIRED_BLACKOUT'}" class="pill-badge badge-expired">Blackout Alert</span>
+                            </div>
+                            <div class="mono-num" style="font-size: 0.75rem; color: var(--text-secondary);" th:text="${t.daysRemaining + ' days remaining'}">84 days remaining</div>
+                        </div>
+                    </div>
+
+                    <div th:if="${telecomMatrix.isEmpty()}" style="text-align: center; padding: 2rem 1rem; color: var(--text-muted);">
+                        No telecom plans logged yet. <a href="/telecom" style="color: var(--cyan);">Add family plans.</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Chart.js Visualization Scripts -->
     <script th:inline="javascript">
         /*<![CDATA[*/
+        let macroChartInstance = null;
+
         fetch('/api/analytics/macro')
             .then(res => res.json())
             .then(data => {
-                const dist = data.percentageDistribution;
-                const ctx = document.getElementById('macroDonutChart').getContext('2d');
-                new Chart(ctx, {
+                const categories = Object.keys(data.percentageDistribution);
+                const percentages = Object.values(data.percentageDistribution);
+                
+                const rawSpends = [
+                    data.electricitySpend,
+                    data.gasSpend,
+                    data.telecomSpend,
+                    data.transportSpend,
+                    data.grocerySpend
+                ];
+
+                const colorPalette = ['#00f0ff', '#10b981', '#a855f7', '#f59e0b', '#3b82f6'];
+                const glowPalette = [
+                    'rgba(0, 240, 255, 0.4)',
+                    'rgba(16, 185, 129, 0.4)',
+                    'rgba(168, 85, 247, 0.4)',
+                    'rgba(245, 158, 11, 0.4)',
+                    'rgba(59, 130, 246, 0.4)'
+                ];
+
+                // 1. Doughnut Chart with Center Cutout
+                const donutCtx = document.getElementById('macroDonutChart').getContext('2d');
+                new Chart(donutCtx, {
                     type: 'doughnut',
                     data: {
-                        labels: Object.keys(dist),
+                        labels: categories,
                         datasets: [{
-                            data: Object.values(dist),
-                            backgroundColor: ['#58a6ff', '#f85149', '#bc8cff', '#d29922', '#3fb950']
+                            data: percentages,
+                            backgroundColor: colorPalette,
+                            borderColor: '#07090e',
+                            borderWidth: 3,
+                            hoverOffset: 6
                         }]
                     },
                     options: {
                         responsive: true,
-                        plugins: { legend: { position: 'bottom', labels: { color: '#f0f6fc' } } }
+                        maintainAspectRatio: false,
+                        cutout: '72%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(14, 19, 31, 0.95)',
+                                titleColor: '#f8fafc',
+                                bodyColor: '#94a3b8',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                displayColors: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw.toFixed(1)}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Legend grid builder
+                const legendGrid = document.getElementById('chartLegendGrid');
+                categories.forEach((cat, idx) => {
+                    const el = document.createElement('div');
+                    el.style.display = 'flex';
+                    el.style.alignItems = 'center';
+                    el.style.gap = '0.4rem';
+                    el.style.color = '#94a3b8';
+                    el.innerHTML = `<span style="width: 8px; height: 8px; border-radius: 50%; background: ${colorPalette[idx]}; box-shadow: 0 0 6px ${glowPalette[idx]};"></span> <span>${cat}: <strong style="color: #f8fafc;">${percentages[idx].toFixed(1)}%</strong></span>`;
+                    legendGrid.appendChild(el);
+                });
+
+                // 2. Bar Chart of Spend Velocity
+                const barCtx = document.getElementById('macroBarChart').getContext('2d');
+                macroChartInstance = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: categories,
+                        datasets: [{
+                            label: 'Monthly Outflow (₹)',
+                            data: rawSpends,
+                            backgroundColor: colorPalette,
+                            borderRadius: 8,
+                            borderWidth: 0,
+                            barThickness: 34
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: 'rgba(14, 19, 31, 0.95)',
+                                titleColor: '#f8fafc',
+                                bodyColor: '#94a3b8',
+                                borderColor: 'rgba(255, 255, 255, 0.1)',
+                                borderWidth: 1,
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Spend: ₹${context.raw.toFixed(2)}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#64748b', font: { family: 'Plus Jakarta Sans', weight: '600' } }
+                            },
+                            y: {
+                                grid: { color: 'rgba(255, 255, 255, 0.04)' },
+                                ticks: {
+                                    color: '#64748b',
+                                    font: { family: 'JetBrains Mono' },
+                                    callback: function(value) { return '₹' + value; }
+                                }
+                            }
+                        }
                     }
                 });
             });
+
+        function toggleChartType(type) {
+            // allows dynamic inspection
+        }
         /*]]>*/
     </script>
 </body>

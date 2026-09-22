@@ -1,23 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>SmartLedger - Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — SmartLedger Pro</title>
     <link rel="stylesheet" th:href="@{/css/glassmorphic.css}">
 </head>
-<body style="display: flex; align-items: center; justify-content: center;">
-    <div class="glass-card" style="width: 380px;">
-        <h2 style="text-align: center; color: #58a6ff; margin-bottom: 1.5rem;">⚡ SmartLedger Login</h2>
-        <div th:if="${error}" style="color: #f85149; margin-bottom: 1rem; font-size: 0.9rem;" th:text="${error}"></div>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem;">
+    <div class="glass-panel" style="width: 100%; max-width: 420px; border-color: rgba(255, 255, 255, 0.12); box-shadow: 0 24px 60px rgba(0,0,0,0.8), 0 0 30px -10px var(--cyan-glow);">
+        <!-- Brand Header -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #0ea5e9, #10b981); display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); color: #fff; font-size: 1.5rem; margin-bottom: 0.75rem;">
+                ⚡
+            </div>
+            <h1 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; color: #f8fafc; margin: 0;">
+                SmartLedger <span style="font-size: 0.7rem; font-weight: 700; background: rgba(0, 240, 255, 0.12); color: #00f0ff; border: 1px solid rgba(0, 240, 255, 0.3); padding: 2px 6px; border-radius: 4px; vertical-align: middle;">PRO</span>
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.25rem;">
+                Executive Household Utility Intelligence Terminal
+            </p>
+        </div>
+
+        <!-- Error Notification -->
+        <div th:if="${error}" class="pill-badge badge-expired" style="width: 100%; justify-content: center; padding: 0.6rem; margin-bottom: 1.25rem; border-radius: var(--radius-sm);" th:text="${error}">
+            Invalid email or password
+        </div>
+
         <form method="post" action="/login">
-            <label>Email Address</label>
-            <input type="email" name="email" required placeholder="user@example.com">
-            <label>Password</label>
-            <input type="password" name="password" required placeholder="••••••••">
-            <button type="submit" class="btn-smart" style="width: 100%; margin-top: 10px;">Sign In</button>
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="emailInput" name="email" class="form-input" required placeholder="demo@smartledger.local">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="passwordInput" name="password" class="form-input" required placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="btn-premium" style="width: 100%; margin-top: 0.5rem; padding: 0.75rem;">
+                <span>Sign In to Command Hub &rarr;</span>
+            </button>
         </form>
-        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: #8b949e;">
-            Don't have an account? <a href="/register" style="color: #58a6ff;">Register here</a>
-        </p>
+
+        <!-- Fast Demo Credentials Helper -->
+        <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-subtle); text-align: center;">
+            <button type="button" onclick="fillDemo()" class="btn-ghost" style="width: 100%; justify-content: center; font-size: 0.75rem;">
+                <span>🔑 Auto-Fill Demo Credentials</span>
+            </button>
+            <p style="margin-top: 1rem; font-size: 0.825rem; color: var(--text-secondary);">
+                Don't have an account? <a href="/register" style="color: var(--cyan); text-decoration: none; font-weight: 600;">Register here</a>
+            </p>
+        </div>
     </div>
+
+    <script>
+        function fillDemo() {
+            document.getElementById('emailInput').value = 'demo@smartledger.local';
+            document.getElementById('passwordInput').value = 'password123';
+        }
+    </script>
 </body>
 </html>
