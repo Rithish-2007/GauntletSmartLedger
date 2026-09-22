@@ -1,8 +1,10 @@
 package com.smartledger.service.tariff;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Component
+@Primary
 public class ProgressiveSlabTariffStrategy implements TariffCalculationStrategy {
 
     private static final double FIXED_CHARGE = 50.0;
