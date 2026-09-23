@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigation, ShoppingCart, Fuel, Ticket, CheckCircle, Package } from 'lucide-react';
 import type { TransportRecordDetail, GroceryRecordDetail } from '../types/analytics';
+import { getPantryCeiling } from '../services/api';
 
 interface TransportGroceryOverviewProps {
   transportRecords: TransportRecordDetail[];
@@ -15,6 +16,9 @@ export const TransportGroceryOverview: React.FC<TransportGroceryOverviewProps> =
   groceryRecords,
   groceryTotal,
 }) => {
+  const ceiling = getPantryCeiling();
+  const pct = ceiling > 0 ? Math.min(100, (groceryTotal / ceiling) * 100) : 0;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
       {/* Transport Bento Card */}
@@ -161,15 +165,17 @@ export const TransportGroceryOverview: React.FC<TransportGroceryOverviewProps> =
         {/* Budget Progress Bar */}
         <div className="mt-3 pt-3 border-t border-zinc-800/80">
           <div className="flex justify-between items-center text-[11px] font-mono text-zinc-400 mb-1">
-            <span>Monthly Pantry Ceiling: ₹5,000</span>
-            <span className="text-emerald-400 font-bold">
-              {((groceryTotal / 5000) * 100).toFixed(1)}% Absorbed
+            <span>Monthly Pantry Ceiling: ₹{ceiling.toLocaleString('en-IN')}</span>
+            <span className={`font-bold ${pct > 90 ? 'text-rose-400' : 'text-emerald-400'}`}>
+              {pct.toFixed(1)}% Absorbed
             </span>
           </div>
           <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-500 rounded-full"
-              style={{ width: `${Math.min(100, (groceryTotal / 5000) * 100)}%` }}
+              className={`h-full rounded-full transition-all duration-500 ${
+                pct > 90 ? 'bg-rose-500' : pct > 75 ? 'bg-amber-400' : 'bg-emerald-500'
+              }`}
+              style={{ width: `${pct}%` }}
             />
           </div>
         </div>
