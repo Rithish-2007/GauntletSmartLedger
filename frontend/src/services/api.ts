@@ -2,7 +2,6 @@ import type {
   OverviewData,
   SubMeterSimResult,
   AddElectricityInput,
-  ConnectGasInput,
   AddTelecomInput,
   AddTravelInput,
   AddGroceryInput,

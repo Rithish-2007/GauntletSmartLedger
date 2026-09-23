@@ -61,10 +61,15 @@ export interface TelecomRecordDetail {
 
 export interface TransportRecordDetail {
   recordId: number;
-  commuteType: 'FUEL' | 'PUBLIC_TICKET' | 'PASS' | string;
+  commuteType: 'FUEL' | 'PUBLIC_TICKET' | 'TICKET' | 'PASS' | string;
   personName: string;
   originPoint?: string;
   destinationPoint?: string;
+  vehicleName?: string;
+  passengerName?: string;
+  routeDestination?: string;
+  fuelType?: string;
+  transitMode?: string;
   distanceKm?: number | null;
   litersFilled?: number | null;
   totalFareCost: number;

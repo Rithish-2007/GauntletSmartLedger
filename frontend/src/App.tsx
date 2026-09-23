@@ -1,0 +1,124 @@
+import React, { useState, useEffect } from 'react';
+import { Header } from './components/Header';
+import { DashboardPage } from './pages/DashboardPage';
+import { ElectricityPage } from './pages/ElectricityPage';
+import { GasPage } from './pages/GasPage';
+import { TelecomPage } from './pages/TelecomPage';
+import { MobilityPage } from './pages/MobilityPage';
+import { PantryPage } from './pages/PantryPage';
+import { QuickAddModal } from './components/modals/QuickAddModal';
+import { fetchOverview } from './services/api';
+import type { OverviewData, PageId } from './types/analytics';
+import { Shield, Cpu, ExternalLink, Zap } from 'lucide-react';
+
+export const App: React.FC = () => {
+  const [overview, setOverview] = useState<OverviewData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<PageId>('dashboard');
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState<boolean>(false);
+
+  const loadData = async () => {
+    setIsLoading(true);
+    const result = await fetchOverview();
+    setOverview(result.data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  if (!overview) {
+    return (
+      <div className="min-h-screen bg-[#09090b] flex items-center justify-center text-white">
+        <div className="flex flex-col items-center space-y-3 font-mono text-sm text-zinc-400">
+          <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+          <span>Synchronizing Household Command Console...</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans relative">
+      {/* Executive Persistent Header with Page Navigation */}
+      <Header
+        user={overview.user}
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+        onRefresh={loadData}
+        isLoading={isLoading}
+        onOpenQuickAdd={() => setIsQuickAddOpen(true)}
+      />
+
+      {/* Dynamic Page Views */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {currentPage === 'dashboard' && (
+          <DashboardPage
+            overview={overview}
+            onNavigate={setCurrentPage}
+            onOpenQuickAdd={() => setIsQuickAddOpen(true)}
+          />
+        )}
+        {currentPage === 'electricity' && (
+          <ElectricityPage overview={overview} onRefresh={loadData} />
+        )}
+        {currentPage === 'gas' && (
+          <GasPage overview={overview} onRefresh={loadData} />
+        )}
+        {currentPage === 'telecom' && (
+          <TelecomPage overview={overview} onRefresh={loadData} />
+        )}
+        {currentPage === 'mobility' && (
+          <MobilityPage overview={overview} onRefresh={loadData} />
+        )}
+        {currentPage === 'pantry' && (
+          <PantryPage overview={overview} onRefresh={loadData} />
+        )}
+      </main>
+
+      {/* Universal Quick Add Modal */}
+      <QuickAddModal
+        isOpen={isQuickAddOpen}
+        onClose={() => setIsQuickAddOpen(false)}
+        onSuccess={() => {
+          setIsQuickAddOpen(false);
+          loadData();
+        }}
+      />
+
+      {/* Institutional Executive Footer */}
+      <footer className="border-t border-zinc-800/80 bg-zinc-950/80 mt-12 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 font-mono gap-3">
+          <div className="flex items-center space-x-2">
+            <Shield className="w-4 h-4 text-emerald-400" />
+            <span>SmartLedger Autonomous Architecture • Institutional Edition</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <span className="flex items-center gap-1">
+              <Cpu className="w-3.5 h-3.5 text-zinc-400" />
+              <span>Spring Boot 3.3.4 (H2 Database)</span>
+            </span>
+            <span>•</span>
+            <span className="flex items-center gap-1">
+              <Zap className="w-3.5 h-3.5 text-emerald-400" />
+              <span>React 19 + Recharts + Geist</span>
+            </span>
+            <span>•</span>
+            <a
+              href="http://localhost:8080/dashboard"
+              target="_blank"
+              rel="noreferrer"
+              className="text-zinc-400 hover:text-white flex items-center gap-1 transition-colors"
+            >
+              <span>Thymeleaf Legacy</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;
