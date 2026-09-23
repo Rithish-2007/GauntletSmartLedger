@@ -125,6 +125,24 @@ export interface SubMeterSimResult {
   isShared: boolean;
 }
 
+export interface TraditionalTariffBreakdown {
+  units: number;
+  fixedCharge: number;
+  freeUnits: number;
+  tier1Units: number;
+  tier1Rate: number;
+  tier1Cost: number;
+  tier2Units: number;
+  tier2Rate: number;
+  tier2Cost: number;
+  tier3Units: number;
+  tier3Rate: number;
+  tier3Cost: number;
+  totalBill: number;
+  effectiveRate: number;
+  subsidySavings: number;
+}
+
 export type PageId = 'dashboard' | 'electricity' | 'gas' | 'telecom' | 'mobility' | 'pantry';
 
 export interface AddElectricityInput {

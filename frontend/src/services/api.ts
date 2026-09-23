@@ -1,6 +1,7 @@
 import type {
   OverviewData,
   SubMeterSimResult,
+  TraditionalTariffBreakdown,
   AddElectricityInput,
   AddTelecomInput,
   AddTravelInput,
@@ -537,6 +538,89 @@ export function calculateTnebBill(units: number): number {
   if (units <= 800) return 300 * 4.50 + 100 * 6.00 + 100 * 8.00 + (units - 600) * 9.00;
   if (units <= 1000) return 300 * 4.50 + 100 * 6.00 + 100 * 8.00 + 200 * 9.00 + (units - 800) * 10.00;
   return 300 * 4.50 + 100 * 6.00 + 100 * 8.00 + 200 * 9.00 + 200 * 10.00 + (units - 1000) * 11.00;
+}
+
+export function calculateTraditionalTnebBreakdown(units: number): TraditionalTariffBreakdown {
+  const fixedCharge = 50.0;
+  if (units <= 0) {
+    return {
+      units: 0,
+      fixedCharge,
+      freeUnits: 0,
+      tier1Units: 0,
+      tier1Rate: 2.25,
+      tier1Cost: 0,
+      tier2Units: 0,
+      tier2Rate: 4.50,
+      tier2Cost: 0,
+      tier3Units: 0,
+      tier3Rate: 6.00,
+      tier3Cost: 0,
+      totalBill: fixedCharge,
+      effectiveRate: 0,
+      subsidySavings: 0,
+    };
+  }
+
+  const freeUnits = Math.min(units, 100);
+  let rem = units - freeUnits;
+
+  const tier1Units = Math.min(rem, 100);
+  const tier1Cost = tier1Units * 2.25;
+  rem -= tier1Units;
+
+  const tier2Units = Math.min(rem, 300);
+  const tier2Cost = tier2Units * 4.50;
+  rem -= tier2Units;
+
+  const tier3Units = Math.max(0, rem);
+  const tier3Cost = tier3Units * 6.00;
+
+  const energyCost = tier1Cost + tier2Cost + tier3Cost;
+  const totalBill = fixedCharge + energyCost;
+  const effectiveRate = units > 0 ? totalBill / units : 0;
+  const subsidySavings = freeUnits * 2.25;
+
+  return {
+    units,
+    fixedCharge,
+    freeUnits,
+    tier1Units,
+    tier1Rate: 2.25,
+    tier1Cost,
+    tier2Units,
+    tier2Rate: 4.50,
+    tier2Cost,
+    tier3Units,
+    tier3Rate: 6.00,
+    tier3Cost,
+    totalBill,
+    effectiveRate,
+    subsidySavings,
+  };
+}
+
+const PANTRY_CEILING_KEY = 'smartledger_pantry_ceiling';
+
+export function getPantryCeiling(): number {
+  try {
+    const val = localStorage.getItem(PANTRY_CEILING_KEY);
+    if (val) {
+      const parsed = parseFloat(val);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+  } catch (e) {
+    console.warn('Failed to read pantry ceiling from storage', e);
+  }
+  return 5000;
+}
+
+export function setPantryCeiling(ceiling: number): void {
+  try {
+    localStorage.setItem(PANTRY_CEILING_KEY, String(Math.max(100, ceiling)));
+  } catch (e) {
+    console.warn('Failed to write pantry ceiling to storage', e);
+  }
 }
 
 export async function simulateElectricity(
