@@ -20,7 +20,7 @@ export const MobilityPage: React.FC<MobilityPageProps> = ({ overview, onRefresh 
     .reduce((sum, r) => sum + (r.totalFareCost || 0), 0);
 
   const ticketSpend = transport.records
-    .filter((r) => r.commuteType === 'TICKET')
+    .filter((r) => r.commuteType === 'PUBLIC_TICKET' || r.commuteType === 'TICKET' || r.commuteType !== 'FUEL')
     .reduce((sum, r) => sum + (r.totalFareCost || 0), 0);
 
   const handleDelete = async (recordId: number) => {
