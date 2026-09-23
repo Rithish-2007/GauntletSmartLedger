@@ -47,6 +47,32 @@ public class GasService {
         return Optional.of(depletionEngine.calculateForecast(active.get(), past, LocalDate.now()));
     }
 
+    @Transactional
+    public GasRecord markActiveCylinderEmpty(User user, LocalDate finishedDate) {
+        return repository.findByUserAndIsActiveTrue(user).map(curr -> {
+            curr.setIsActive(false);
+            curr.setFinishedDate(finishedDate != null ? finishedDate : LocalDate.now());
+            if (curr.getConnectedDate() != null) {
+                long days = java.time.temporal.ChronoUnit.DAYS.between(curr.getConnectedDate(), curr.getFinishedDate());
+                if (days > 0 && curr.getCylinderWeightKg() != null) {
+                    curr.setBurnRatePerDay(curr.getCylinderWeightKg() / days);
+                }
+            }
+            curr.validateRecord();
+            return repository.save(curr);
+        }).orElse(null);
+    }
+
+    @Transactional
+    public boolean deleteRecord(User user, Long recordId) {
+        return repository.findById(recordId)
+                .filter(r -> r.getUser().getUserId().equals(user.getUserId()))
+                .map(r -> {
+                    repository.delete(r);
+                    return true;
+                }).orElse(false);
+    }
+
     public List<GasRecord> getAllForUser(User user) {
         return repository.findByUserOrderByConnectedDateDesc(user);
     }

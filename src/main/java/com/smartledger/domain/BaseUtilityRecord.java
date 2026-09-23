@@ -36,6 +36,7 @@ public abstract class BaseUtilityRecord {
     public Long getRecordId() { return recordId; }
     public void setRecordId(Long recordId) { this.recordId = recordId; }
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 

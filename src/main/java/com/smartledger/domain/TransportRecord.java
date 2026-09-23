@@ -58,13 +58,13 @@ public class TransportRecord extends BaseUtilityRecord {
     @Override
     public void validateRecord() {
         if (personName == null || personName.trim().isEmpty()) {
-            throw new UtilityValidationException("Person name is required");
+            throw new UtilityValidationException("Person/Vehicle name is required");
         }
         if (commuteType == null) {
             throw new UtilityValidationException("Commute type is required");
         }
-        if (distanceKm == null || distanceKm <= 0) {
-            throw new UtilityValidationException("Distance must be greater than 0");
+        if (distanceKm != null && distanceKm < 0) {
+            throw new UtilityValidationException("Distance cannot be negative");
         }
         if (totalFareCost == null || totalFareCost < 0) {
             throw new UtilityValidationException("Fare cost cannot be negative");
@@ -73,8 +73,9 @@ public class TransportRecord extends BaseUtilityRecord {
 
     @Override
     public String generateSummaryReport() {
-        return String.format("Transport [%s - %s]: %.1f km, ₹%.2f (₹%.2f/km)",
-                commuteType, personName, distanceKm, totalFareCost, costPerKm != null ? costPerKm : 0.0);
+        String distStr = (distanceKm != null && distanceKm > 0) ? String.format("%.1f km", distanceKm) : "Direct Expense";
+        return String.format("Transport [%s - %s]: %s, ₹%.2f (₹%.2f/km)",
+                commuteType, personName, distStr, totalFareCost, costPerKm != null ? costPerKm : 0.0);
     }
 
     public CommuteType getCommuteType() { return commuteType; }

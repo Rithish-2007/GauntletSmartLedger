@@ -30,6 +30,16 @@ public class GroceryService {
         return repository.save(record);
     }
 
+    @Transactional
+    public boolean deleteRecord(User user, Long recordId) {
+        return repository.findById(recordId)
+                .filter(r -> r.getUser().getUserId().equals(user.getUserId()))
+                .map(r -> {
+                    repository.delete(r);
+                    return true;
+                }).orElse(false);
+    }
+
     public GroceryCategorySummaryDto getSummary(User user) {
         List<GroceryRecord> records = repository.findByUserOrderByPurchaseDateDesc(user);
         return analyticsEngine.summarizeCategoricalSpend(records);

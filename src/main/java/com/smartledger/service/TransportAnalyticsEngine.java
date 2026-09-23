@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class TransportAnalyticsEngine {
 
-    public CommuteMetric calculateMetric(CommuteType type, double distanceKm, Double liters, double fareCost) {
-        if (distanceKm <= 0) {
+    public CommuteMetric calculateMetric(CommuteType type, Double distanceKm, Double liters, double fareCost) {
+        if (distanceKm != null && distanceKm <= 0) {
             throw new UtilityValidationException("Distance must be greater than 0 km");
         }
         if (fareCost < 0) {
@@ -18,12 +18,12 @@ public class TransportAnalyticsEngine {
 
         Double mileage = null;
         if (type == CommuteType.FUEL) {
-            if (liters != null && liters > 0) {
+            if (distanceKm != null && distanceKm > 0 && liters != null && liters > 0) {
                 mileage = distanceKm / liters;
             }
         }
 
-        double costPerKm = fareCost / distanceKm;
-        return new CommuteMetric(distanceKm, liters, fareCost, mileage, costPerKm);
+        Double costPerKm = (distanceKm != null && distanceKm > 0) ? (fareCost / distanceKm) : null;
+        return new CommuteMetric(distanceKm != null ? distanceKm : 0.0, liters, fareCost, mileage, costPerKm);
     }
 }

@@ -24,7 +24,7 @@ public class TransportService {
 
     @Transactional
     public TransportRecord addTrip(User user, CommuteType type, String personName, String origin,
-                                   String destination, double distanceKm, Double liters, double totalFare,
+                                   String destination, Double distanceKm, Double liters, double totalFare,
                                    LocalDate date) {
         CommuteMetric metric = analyticsEngine.calculateMetric(type, distanceKm, liters, totalFare);
         TransportRecord record = new TransportRecord(
@@ -33,6 +33,16 @@ public class TransportService {
         );
         record.validateRecord();
         return repository.save(record);
+    }
+
+    @Transactional
+    public boolean deleteRecord(User user, Long recordId) {
+        return repository.findById(recordId)
+                .filter(r -> r.getUser().getUserId().equals(user.getUserId()))
+                .map(r -> {
+                    repository.delete(r);
+                    return true;
+                }).orElse(false);
     }
 
     public List<TransportRecord> getTripsForUser(User user) {
