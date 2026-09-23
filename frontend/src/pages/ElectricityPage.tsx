@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TnebSimulator } from '../components/TnebSimulator';
+import { TraditionalTnebCalculator } from '../components/TraditionalTnebCalculator';
 import { AddElectricityModal } from '../components/modals/AddElectricityModal';
 import { ElectricityTrendChart } from '../components/charts/ElectricityTrendChart';
 import { deleteElectricityRecord } from '../services/api';
@@ -30,6 +30,10 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
     }
   };
 
+  const effectiveUnitRate = latest && latest.mySubmeterUnits > 0
+    ? (latest.calculatedMyShare || latest.totalEbAmount) / latest.mySubmeterUnits
+    : 0;
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -38,27 +42,27 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
           <div className="flex items-center space-x-2">
             <span className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
               <Zap className="w-3 h-3" />
-              <span>TNEB TARIFF MATRIX</span>
+              <span>DOMESTIC TNEB TARIFF</span>
             </span>
             <span className="text-xs text-zinc-500 font-mono">
-              Bi-Monthly Progressive Domestic Slabs
+              Bi-Monthly Household Slabs & Subsidy Matrix
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight mt-1 font-sans">
-            Electricity & Sub-Meter Fair-Split Protocol
+            Household Electricity & TNEB Tariff Management
           </h1>
         </div>
 
         {/* Controls: Quick Stats & Add Action */}
         <div className="flex items-center space-x-3 text-xs font-mono">
           <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
-            <span className="text-zinc-500 block text-[10px]">MY LATEST SHARE</span>
+            <span className="text-zinc-500 block text-[10px]">LATEST CONSUMPTION</span>
             <span className="text-base font-bold text-cyan-400 font-mono tabular-nums">
-              ₹{latest?.calculatedMyShare ? latest.calculatedMyShare.toFixed(2) : '0.00'}
+              {latest ? `${latest.mySubmeterUnits} kWh` : '0 kWh'}
             </span>
           </div>
           <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
-            <span className="text-zinc-500 block text-[10px]">MASTER BILL</span>
+            <span className="text-zinc-500 block text-[10px]">LATEST BILL PAID</span>
             <span className="text-base font-bold text-white font-mono tabular-nums">
               ₹{latest?.totalEbAmount ? latest.totalEbAmount.toFixed(2) : '0.00'}
             </span>
@@ -98,33 +102,27 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
 
               <div className="space-y-3 mt-4 text-xs font-mono">
                 <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                  <span className="text-zinc-400">Master Meter Units</span>
-                  <span className="text-white font-bold tabular-nums">{latest.masterEbUnits} kWh</span>
+                  <span className="text-zinc-400">Billing Cycle</span>
+                  <span className="text-white font-bold">{latest.billingMonth}</span>
                 </div>
                 <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                  <span className="text-zinc-400">Total TNEB Assessed Bill</span>
-                  <span className="text-white font-bold tabular-nums">₹{latest.totalEbAmount.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                  <span className="text-cyan-400 font-medium">My Floor Sub-Meter Units</span>
+                  <span className="text-zinc-400">Total Units Consumed</span>
                   <span className="text-cyan-300 font-bold tabular-nums">{latest.mySubmeterUnits} kWh</span>
                 </div>
-                {latest.otherSubmeterUnits > 0 && (
-                  <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                    <span className="text-purple-400 font-medium">Tenant / Other Floor Units</span>
-                    <span className="text-purple-300 font-bold tabular-nums">{latest.otherSubmeterUnits} kWh</span>
-                  </div>
-                )}
                 <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
-                  <span className="text-zinc-400">Effective Unit Cost</span>
+                  <span className="text-zinc-400">Payment Date</span>
+                  <span className="text-zinc-300">{latest.paidDate || 'Recorded'}</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-zinc-800/60">
+                  <span className="text-zinc-400">Effective Tariff Rate</span>
                   <span className="text-white font-bold tabular-nums">
-                    ₹{(latest.mySubmeterUnits > 0 ? latest.calculatedMyShare / latest.mySubmeterUnits : 0).toFixed(2)} / kWh
+                    ₹{effectiveUnitRate.toFixed(2)} / kWh
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-2 bg-cyan-950/20 px-3 rounded-lg border border-cyan-800/30">
-                  <span className="text-cyan-300 font-semibold">My Verified Fair-Share</span>
+                  <span className="text-cyan-300 font-semibold">Total Bill Amount Paid</span>
                   <span className="text-base font-extrabold text-white tabular-nums">
-                    ₹{latest.calculatedMyShare.toFixed(2)}
+                    ₹{(latest.totalEbAmount || latest.calculatedMyShare).toFixed(2)}
                   </span>
                 </div>
               </div>
@@ -161,7 +159,7 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
                   <tr className="border-b border-zinc-800 text-zinc-500 text-[11px]">
                     <th className="pb-2">Month</th>
                     <th className="pb-2">Units</th>
-                    <th className="pb-2">Share</th>
+                    <th className="pb-2">Bill Paid</th>
                     <th className="pb-2 text-right">Action</th>
                   </tr>
                 </thead>
@@ -177,7 +175,7 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
                       <tr key={rec.recordId} className="hover:bg-zinc-900/40">
                         <td className="py-2.5 font-semibold text-white">{rec.billingMonth}</td>
                         <td className="py-2.5 text-cyan-400">{rec.mySubmeterUnits} kWh</td>
-                        <td className="py-2.5 font-bold text-white">₹{rec.calculatedMyShare.toFixed(2)}</td>
+                        <td className="py-2.5 font-bold text-white">₹{(rec.totalEbAmount || rec.calculatedMyShare).toFixed(2)}</td>
                         <td className="py-2.5 text-right">
                           <button
                             onClick={() => handleDelete(rec.recordId)}
@@ -197,9 +195,9 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
           </div>
         </div>
 
-        {/* Right Column: Full Interactive Simulator */}
+        {/* Right Column: Traditional TNEB Domestic Slab Calculator */}
         <div className="lg:col-span-7">
-          <TnebSimulator />
+          <TraditionalTnebCalculator />
         </div>
       </div>
 
