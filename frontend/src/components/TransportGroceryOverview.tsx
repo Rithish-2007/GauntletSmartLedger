@@ -39,49 +39,63 @@ export const TransportGroceryOverview: React.FC<TransportGroceryOverviewProps> =
 
           {/* Commute items list */}
           <div className="space-y-2.5 mt-3">
-            {transportRecords.map((t) => (
-              <div
-                key={t.recordId}
-                className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center space-x-2.5">
-                  <div className="p-1.5 rounded bg-zinc-800 text-blue-400">
-                    {t.commuteType === 'FUEL' ? (
-                      <Fuel className="w-3.5 h-3.5 text-amber-400" />
-                    ) : (
-                      <Ticket className="w-3.5 h-3.5 text-blue-400" />
-                    )}
-                  </div>
-                  <div>
-                    <div className="font-medium text-white flex items-center gap-1.5">
-                      <span>{t.originPoint} → {t.destinationPoint}</span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400">
-                        {t.distanceKm} km
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-zinc-400 font-mono mt-0.5">
-                      {t.commuteType === 'FUEL'
-                        ? `${t.litersFilled}L Fuel • ${t.mileageCalculated ?? 18} km/L • ₹${t.costPerKm?.toFixed(2) ?? '5.67'}/km`
-                        : `Transit Ticket • ₹${t.costPerKm?.toFixed(2) ?? '1.60'}/km`}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right font-mono">
-                  <div className="font-bold text-white">₹{t.totalFareCost.toFixed(2)}</div>
-                  <div className="text-[10px] text-zinc-500">{t.entryDate}</div>
-                </div>
+            {transportRecords.length === 0 ? (
+              <div className="py-6 text-center text-zinc-500 font-mono text-xs">
+                No travel or fuel expenses recorded yet. Click "+ Record Expense" to log trips.
               </div>
-            ))}
+            ) : (
+              transportRecords.slice(0, 4).map((t) => {
+                const isFuel = t.commuteType === 'FUEL';
+                return (
+                  <div
+                    key={t.recordId}
+                    className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800 flex items-center justify-between text-xs"
+                  >
+                    <div className="flex items-center space-x-2.5">
+                      <div className="p-1.5 rounded bg-zinc-800 text-blue-400">
+                        {isFuel ? (
+                          <Fuel className="w-3.5 h-3.5 text-amber-400" />
+                        ) : (
+                          <Ticket className="w-3.5 h-3.5 text-blue-400" />
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-medium text-white flex items-center gap-1.5">
+                          {isFuel ? (
+                            <span>{t.vehicleName || t.originPoint || 'Vehicle'}</span>
+                          ) : (
+                            <span>
+                              {t.passengerName || t.originPoint || 'Passenger'}
+                              {(t.routeDestination || t.destinationPoint) ? ` → ${t.routeDestination || t.destinationPoint}` : ''}
+                            </span>
+                          )}
+                          <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400">
+                            {isFuel ? (t.fuelType || t.destinationPoint || 'Petrol') : (t.transitMode || 'Ticket')}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-zinc-400 font-mono mt-0.5">
+                          {isFuel ? 'Fuel Fill-Up' : 'Commute Ticket'}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right font-mono">
+                      <div className="font-bold text-white">₹{t.totalFareCost.toFixed(2)}</div>
+                      <div className="text-[10px] text-zinc-500">{t.entryDate}</div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
         <div className="mt-3 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-400 font-mono">
           <span className="text-emerald-400 flex items-center gap-1">
             <CheckCircle className="w-3 h-3" />
-            Public Transit Cost Reduction: 71.8% vs Petrol
+            <span>{transportRecords.length} travel & fuel entries verified</span>
           </span>
-          <span className="text-zinc-500">2 Modes Tracked</span>
+          <span className="text-zinc-500">Everyday Ledger</span>
         </div>
       </div>
 
@@ -107,49 +121,55 @@ export const TransportGroceryOverview: React.FC<TransportGroceryOverviewProps> =
 
           {/* Grocery items list */}
           <div className="space-y-2.5 mt-3">
-            {groceryRecords.map((g) => (
-              <div
-                key={g.recordId}
-                className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center space-x-2.5">
-                  <div className="p-1.5 rounded bg-zinc-800 text-amber-400">
-                    <Package className="w-3.5 h-3.5" />
-                  </div>
-                  <div>
-                    <div className="font-medium text-white flex items-center gap-1.5">
-                      <span>{g.storeName}</span>
-                      <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-800 text-amber-300/80">
-                        {g.category.replace('_', ' ')}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-zinc-400 mt-0.5 truncate max-w-[200px] sm:max-w-[280px]">
-                      {g.receiptNotes || 'Standard provisions'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-right font-mono">
-                  <div className="font-bold text-white">₹{g.totalAmount.toFixed(2)}</div>
-                  <div className="text-[10px] text-zinc-500">{g.purchaseDate}</div>
-                </div>
+            {groceryRecords.length === 0 ? (
+              <div className="py-6 text-center text-zinc-500 font-mono text-xs">
+                No grocery invoices recorded yet. Click "+ Record Expense" to log purchases.
               </div>
-            ))}
+            ) : (
+              groceryRecords.slice(0, 4).map((g) => (
+                <div
+                  key={g.recordId}
+                  className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800 flex items-center justify-between text-xs"
+                >
+                  <div className="flex items-center space-x-2.5">
+                    <div className="p-1.5 rounded bg-zinc-800 text-amber-400">
+                      <Package className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <div className="font-medium text-white flex items-center gap-1.5">
+                        <span>{g.storeName}</span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-zinc-800 text-amber-300/80">
+                          {g.category.replace(/_/g, ' ')}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-zinc-400 mt-0.5 truncate max-w-[200px] sm:max-w-[280px]">
+                        {g.receiptNotes || 'Provisions'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-right font-mono">
+                    <div className="font-bold text-white">₹{g.totalAmount.toFixed(2)}</div>
+                    <div className="text-[10px] text-zinc-500">{g.purchaseDate}</div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 
         {/* Budget Progress Bar */}
         <div className="mt-3 pt-3 border-t border-zinc-800/80">
           <div className="flex justify-between items-center text-[11px] font-mono text-zinc-400 mb-1">
-            <span>Monthly Pantry Ceiling: ₹3,000</span>
+            <span>Monthly Pantry Ceiling: ₹5,000</span>
             <span className="text-emerald-400 font-bold">
-              {((groceryTotal / 3000) * 100).toFixed(1)}% Absorbed
+              {((groceryTotal / 5000) * 100).toFixed(1)}% Absorbed
             </span>
           </div>
           <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
             <div
               className="h-full bg-emerald-500 rounded-full"
-              style={{ width: `${Math.min(100, (groceryTotal / 3000) * 100)}%` }}
+              style={{ width: `${Math.min(100, (groceryTotal / 5000) * 100)}%` }}
             />
           </div>
         </div>

@@ -5,5 +5,5 @@ public record CommuteMetric(
         Double litersFilled,
         double totalCost,
         Double mileageKmPerLiter,
-        double costPerKm
+        Double costPerKm
 ) {}

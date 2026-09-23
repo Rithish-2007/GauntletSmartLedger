@@ -18,75 +18,97 @@ interface SpendAreaChartProps {
 export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
   const [activeMetric, setActiveMetric] = useState<'total' | 'electricity' | 'grocery'>('total');
 
-  const isFreshZero = overview.macro.totalMonthlySpend === 0 && overview.electricity.history.length === 0;
+  const getMonthKey = (dateStr?: string | null) => {
+    if (!dateStr || dateStr.length < 7) return '';
+    return dateStr.substring(0, 7);
+  };
 
-  const augElec = overview.electricity.history.find(h => h.billingMonth === '2026-08')?.calculatedMyShare ?? (isFreshZero ? 0 : 380);
-  const currentTotal = Math.round(overview.macro.totalMonthlySpend);
-  const currentElec = Math.round(overview.macro.electricitySpend);
-  const currentGrocery = Math.round(overview.macro.grocerySpend);
-  const currentGas = Math.round(overview.macro.gasSpend);
-  const currentTelecom = Math.round(overview.macro.telecomSpend);
-  const currentTransport = Math.round(overview.macro.transportSpend);
+  const calculateMonthSpend = (targetMonth: string) => {
+    let elec = 0;
+    let gas = 0;
+    let tel = 0;
+    let tra = 0;
+    let gro = 0;
 
-  const trendData = isFreshZero
-    ? [
-        {
-          month: 'Jul 2026',
-          total: 0,
-          electricity: 0,
-          grocery: 0,
-          gas: 0,
-          telecom: 0,
-          transport: 0,
-        },
-        {
-          month: 'Aug 2026',
-          total: 0,
-          electricity: 0,
-          grocery: 0,
-          gas: 0,
-          telecom: 0,
-          transport: 0,
-        },
-        {
-          month: 'Sep 2026 (Live)',
-          total: 0,
-          electricity: 0,
-          grocery: 0,
-          gas: 0,
-          telecom: 0,
-          transport: 0,
-        },
-      ]
-    : [
-        {
-          month: 'Jul 2026',
-          total: 4462,
-          electricity: 350,
-          grocery: 1800,
-          gas: 850,
-          telecom: 1217,
-          transport: 245,
-        },
-        {
-          month: 'Aug 2026',
-          total: Math.round(augElec + 850 + 1217 + 280 + 1865),
-          electricity: Math.round(augElec),
-          grocery: 1865,
-          gas: 850,
-          telecom: 1217,
-          transport: 280,
-        },
-        {
-          month: 'Sep 2026 (Live)',
-          total: currentTotal,
-          electricity: currentElec,
-          grocery: currentGrocery,
-          gas: currentGas,
-          telecom: currentTelecom,
-          transport: currentTransport,
-        },
-      ];
+    for (const e of overview.electricity.history) {
+      if (getMonthKey(e.billingMonth) === targetMonth || getMonthKey(e.recordDate) === targetMonth) {
+        elec += (e.calculatedMyShare || 0);
+      }
+    }
+    for (const g of overview.gas.history) {
+      if (getMonthKey(g.connectedDate) === targetMonth || getMonthKey(g.recordDate) === targetMonth) {
+        gas += (g.bookingCost || 0);
+      }
+    }
+    if (overview.gas.active && (getMonthKey(overview.gas.active.connectedDate) === targetMonth || getMonthKey(overview.gas.active.recordDate) === targetMonth)) {
+      gas += (overview.gas.active.bookingCost || 0);
+    }
+    for (const t of overview.telecom.records) {
+      if (getMonthKey(t.rechargeDate) === targetMonth) {
+        tel += (t.planAmount || 0);
+      }
+    }
+    for (const tr of overview.transport.records) {
+      if (getMonthKey(tr.entryDate) === targetMonth) {
+        tra += (tr.totalFareCost || 0);
+      }
+    }
+    for (const gr of overview.grocery.records) {
+      if (getMonthKey(gr.purchaseDate) === targetMonth) {
+        gro += (gr.totalAmount || 0);
+      }
+    }
+
+    const total = elec + gas + tel + tra + gro;
+    return {
+      total: Math.round(total),
+      electricity: Math.round(elec),
+      gas: Math.round(gas),
+      telecom: Math.round(tel),
+      transport: Math.round(tra),
+      grocery: Math.round(gro),
+    };
+  };
+
+  const now = new Date();
+  const currentMonthKey = now.toISOString().substring(0, 7);
+  const d1 = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const prevMonthKey = d1.toISOString().substring(0, 7);
+  const d2 = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+  const prevPrevMonthKey = d2.toISOString().substring(0, 7);
+
+  const formatMonthLabel = (d: Date) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+  const m1Data = calculateMonthSpend(prevPrevMonthKey);
+  const m2Data = calculateMonthSpend(prevMonthKey);
+  const m3Data = calculateMonthSpend(currentMonthKey);
+
+  const liveTotal = Math.max(m3Data.total, Math.round(overview.macro.totalMonthlySpend));
+  const liveElec = Math.max(m3Data.electricity, Math.round(overview.macro.electricitySpend));
+  const liveGroc = Math.max(m3Data.grocery, Math.round(overview.macro.grocerySpend));
+  const liveGas = Math.max(m3Data.gas, Math.round(overview.macro.gasSpend));
+  const liveTel = Math.max(m3Data.telecom, Math.round(overview.macro.telecomSpend));
+  const liveTra = Math.max(m3Data.transport, Math.round(overview.macro.transportSpend));
+
+  const trendData = [
+    {
+      month: formatMonthLabel(d2),
+      ...m1Data,
+    },
+    {
+      month: formatMonthLabel(d1),
+      ...m2Data,
+    },
+    {
+      month: `${formatMonthLabel(now)} (Live)`,
+      total: liveTotal,
+      electricity: liveElec,
+      grocery: liveGroc,
+      gas: liveGas,
+      telecom: liveTel,
+      transport: liveTra,
+    },
+  ];
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -256,12 +278,16 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
         <div className="flex items-center space-x-4">
           <span className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>Current Period: <strong className="text-zinc-200 font-mono">₹{currentTotal.toLocaleString('en-IN')}</strong></span>
+            <span>Current Period: <strong className="text-zinc-200 font-mono">₹{liveTotal.toLocaleString('en-IN')}</strong></span>
           </span>
-          <span className="hidden sm:inline text-zinc-600">|</span>
-          <span className="hidden sm:inline text-zinc-400">
-            Aug Baseline: <strong className="text-zinc-200 font-mono">₹{isFreshZero ? '0' : '4,844'}</strong>
-          </span>
+          {m2Data.total > 0 && (
+            <>
+              <span className="hidden sm:inline text-zinc-600">|</span>
+              <span className="hidden sm:inline text-zinc-400">
+                {formatMonthLabel(d1)}: <strong className="text-zinc-200 font-mono">₹{m2Data.total.toLocaleString('en-IN')}</strong>
+              </span>
+            </>
+          )}
         </div>
         <div className="flex items-center space-x-1 text-zinc-500 font-mono text-[11px]">
           <Layers className="w-3.5 h-3.5" />

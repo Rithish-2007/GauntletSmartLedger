@@ -164,7 +164,7 @@ export const TnebSimulator: React.FC = () => {
             <div className="bg-zinc-900/70 p-3.5 rounded-lg border border-zinc-800">
               <span className="text-[11px] text-zinc-400 font-medium block">Total TNEB Master Bill</span>
               <span className="text-xl font-bold text-white font-mono tabular-nums">
-                ₹{simResult?.totalEbBill.toFixed(2) ?? '1,265.00'}
+                ₹{simResult ? simResult.totalEbBill.toFixed(2) : '0.00'}
               </span>
               <span className="text-[10px] text-zinc-500 font-mono block mt-0.5">
                 First 100U ₹0 Subsidy Included
@@ -175,7 +175,7 @@ export const TnebSimulator: React.FC = () => {
             <div className="bg-zinc-900/70 p-3.5 rounded-lg border border-zinc-800">
               <span className="text-[11px] text-zinc-400 font-medium block">Effective Tariff Rate</span>
               <span className="text-xl font-bold text-emerald-400 font-mono tabular-nums">
-                ₹{simResult?.effectiveRatePerUnit.toFixed(2) ?? '3.01'}
+                ₹{simResult ? simResult.effectiveRatePerUnit.toFixed(2) : '0.00'}
                 <span className="text-xs text-zinc-400 font-normal"> / kWh</span>
               </span>
               <span className="text-[10px] text-zinc-500 font-mono block mt-0.5">
@@ -200,7 +200,7 @@ export const TnebSimulator: React.FC = () => {
               <div className="border-r border-zinc-800/80 pr-2">
                 <div className="text-[10px] uppercase font-mono text-cyan-400 font-semibold">My Floor Share</div>
                 <div className="text-2xl font-black text-white font-mono tabular-nums">
-                  ₹{simResult?.calculatedMyShare.toFixed(2) ?? '542.14'}
+                  ₹{simResult ? simResult.calculatedMyShare.toFixed(2) : '0.00'}
                 </div>
                 <div className="text-[10px] text-zinc-400 font-mono">
                   {myUnits > 0 && masterUnits > 0 ? ((myUnits / (myUnits + otherUnits)) * 100).toFixed(1) : 0}% of load
@@ -210,7 +210,7 @@ export const TnebSimulator: React.FC = () => {
               <div className="pl-2">
                 <div className="text-[10px] uppercase font-mono text-purple-400 font-semibold">Tenant Share</div>
                 <div className="text-2xl font-black text-white font-mono tabular-nums">
-                  ₹{simResult ? (simResult.totalEbBill - simResult.calculatedMyShare).toFixed(2) : '722.86'}
+                  ₹{simResult ? (simResult.totalEbBill - simResult.calculatedMyShare).toFixed(2) : '0.00'}
                 </div>
                 <div className="text-[10px] text-zinc-400 font-mono">
                   {otherUnits > 0 && masterUnits > 0 ? ((otherUnits / (myUnits + otherUnits)) * 100).toFixed(1) : 0}% of load

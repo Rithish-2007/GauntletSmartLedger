@@ -114,8 +114,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ overview, onNaviga
               </div>
               <p className="text-[11px] text-zinc-400 mt-1 line-clamp-2">
                 {gas.active
-                  ? `Thermodynamic depletion, ${gas.forecast?.daysRemaining ?? 0} days left (${gas.forecast?.burnRateKgPerDay?.toFixed(2) ?? '0.00'} kg/d)`
-                  : '0 active cylinders • ₹0.00 spend • Offline reserve'}
+                  ? `Active cylinder connected (${gas.active.cylinderWeightKg} kg)${gas.forecast?.daysRemaining !== undefined ? ` • ${gas.forecast.daysRemaining} days left` : ''}${gas.forecast?.burnRateKgPerDay ? ` (${gas.forecast.burnRateKgPerDay.toFixed(2)} kg/d)` : ''}`
+                  : 'No active cylinder connected • Click to add'}
               </p>
             </div>
             <div className="mt-3 pt-2 border-t border-zinc-800/80 text-[10px] font-mono text-amber-400 font-medium flex items-center justify-between">

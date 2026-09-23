@@ -8,6 +8,12 @@ interface MacroKpiCardsProps {
 
 export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
   const { macro, electricity, gas, telecom, transport } = overview;
+  const totalEntries =
+    transport.records.length +
+    telecom.records.length +
+    overview.grocery.records.length +
+    electricity.history.length +
+    gas.history.length;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -26,10 +32,12 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </span>
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
-          <span className="inline-flex items-center text-emerald-400 font-mono">
-            <TrendingDown className="w-3 h-3 mr-0.5" /> -4.2% vs Aug
+          <span className={`font-mono ${macro.totalMonthlySpend > 0 ? 'text-emerald-400' : 'text-zinc-500'}`}>
+            {macro.totalMonthlySpend > 0 ? 'Live Outflow' : 'No Outflows'}
           </span>
-          <span className="text-zinc-500 font-mono">5 Pillars Active</span>
+          <span className="text-zinc-500 font-mono">
+            {totalEntries > 0 ? `${totalEntries} entries` : 'Empty ledger'}
+          </span>
         </div>
       </div>
 
@@ -49,10 +57,10 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
           <span className="text-cyan-400 font-mono">
-            {electricity.latest?.mySubmeterUnits || 0} kWh share
+            {electricity.latest ? `${electricity.latest.mySubmeterUnits} kWh share` : '0 kWh'}
           </span>
           <span className="text-zinc-500 font-mono">
-            Master: {electricity.latest?.masterEbUnits || 0}U
+            {electricity.latest ? `Master: ${electricity.latest.masterEbUnits}U` : 'No bills logged'}
           </span>
         </div>
       </div>
@@ -67,17 +75,23 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </div>
         </div>
         <div className="flex items-baseline space-x-1.5">
-          <span className="text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
-            {gas.forecast?.daysRemaining ?? 6}
+          <span className={`text-2xl font-bold tracking-tight tabular-nums font-mono ${gas.active ? 'text-white' : 'text-zinc-500'}`}>
+            {gas.active ? (gas.forecast?.daysRemaining !== undefined ? gas.forecast.daysRemaining : '--') : '0'}
           </span>
-          <span className="text-xs text-zinc-400 font-medium">Days Left</span>
+          <span className="text-xs text-zinc-400 font-medium">
+            {gas.active ? 'Days Left' : 'Days (No Cylinder)'}
+          </span>
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
           <span className="text-amber-400 font-mono">
-            {gas.forecast?.burnRateKgPerDay ? `${gas.forecast.burnRateKgPerDay.toFixed(2)} kg/d` : '0.41 kg/d'}
+            {gas.active
+              ? (gas.forecast?.burnRateKgPerDay
+                  ? `${gas.forecast.burnRateKgPerDay.toFixed(2)} kg/d`
+                  : 'In Use')
+              : 'No Active Cylinder'}
           </span>
           <span className="text-zinc-500 font-mono">
-            {gas.active?.cylinderWeightKg || 14.2} kg Cap
+            {gas.active ? `${gas.active.cylinderWeightKg} kg` : '0 kg'}
           </span>
         </div>
       </div>
@@ -98,14 +112,16 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           <span className="text-xs text-zinc-400 font-medium">Active Plans</span>
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
-          {telecom.expiringSoonCount > 0 ? (
+          {telecom.records.length === 0 ? (
+            <span className="text-zinc-500 font-mono">No SIMs registered</span>
+          ) : telecom.expiringSoonCount > 0 ? (
             <span className="text-rose-400 font-mono flex items-center">
               <AlertCircle className="w-3 h-3 mr-0.5" /> {telecom.expiringSoonCount} Expiring
             </span>
           ) : (
             <span className="text-emerald-400 font-mono">All Healthy</span>
           )}
-          <span className="text-zinc-500 font-mono">₹{macro.telecomSpend} /mo</span>
+          <span className="text-zinc-500 font-mono">₹{macro.telecomSpend.toFixed(2)} /mo</span>
         </div>
       </div>
 
@@ -125,9 +141,9 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
           <span className="text-blue-400 font-mono">
-            {transport.records.length} Trips logged
+            {transport.records.length} {transport.records.length === 1 ? 'Entry' : 'Entries'}
           </span>
-          <span className="text-zinc-500 font-mono">Fuel + Transit</span>
+          <span className="text-zinc-500 font-mono">Fuel + Tickets</span>
         </div>
       </div>
     </div>

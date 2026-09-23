@@ -26,12 +26,15 @@ const ICONS: Record<string, React.ReactNode> = {
 export const AllocationDonutChart: React.FC<AllocationDonutChartProps> = ({ overview }) => {
   const { macro } = overview;
 
+  const totalSpend = macro.totalMonthlySpend;
+  const calcPercent = (val: number) => (totalSpend > 0 ? Number(((val / totalSpend) * 100).toFixed(1)) : 0);
+
   const data = [
-    { name: 'Grocery', value: macro.grocerySpend, percent: macro.percentageDistribution?.Grocery ?? 42.9, color: COLORS[0] },
-    { name: 'Telecom', value: macro.telecomSpend, percent: macro.percentageDistribution?.Telecom ?? 23.9, color: COLORS[1] },
-    { name: 'Gas', value: macro.gasSpend, percent: macro.percentageDistribution?.Gas ?? 16.7, color: COLORS[2] },
-    { name: 'Electricity', value: macro.electricitySpend, percent: macro.percentageDistribution?.Electricity ?? 10.7, color: COLORS[3] },
-    { name: 'Transport', value: macro.transportSpend, percent: macro.percentageDistribution?.Transport ?? 5.8, color: COLORS[4] },
+    { name: 'Grocery', value: macro.grocerySpend, percent: calcPercent(macro.grocerySpend), color: COLORS[0] },
+    { name: 'Telecom', value: macro.telecomSpend, percent: calcPercent(macro.telecomSpend), color: COLORS[1] },
+    { name: 'Gas', value: macro.gasSpend, percent: calcPercent(macro.gasSpend), color: COLORS[2] },
+    { name: 'Electricity', value: macro.electricitySpend, percent: calcPercent(macro.electricitySpend), color: COLORS[3] },
+    { name: 'Transport', value: macro.transportSpend, percent: calcPercent(macro.transportSpend), color: COLORS[4] },
   ].filter(item => item.value > 0);
 
   const CustomTooltip = ({ active, payload }: any) => {
