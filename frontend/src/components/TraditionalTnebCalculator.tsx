@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Sliders, Zap, RotateCcw, ShieldCheck, IndianRupee, Sparkles } from 'lucide-react';
+import { Sliders, Zap, RotateCcw, ShieldCheck, Sparkles } from 'lucide-react';
 import { calculateTraditionalTnebBreakdown } from '../services/api';
 
 export const TraditionalTnebCalculator: React.FC = () => {

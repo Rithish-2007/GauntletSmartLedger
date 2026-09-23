@@ -1,5 +1,5 @@
 import React from 'react';
-import { IndianRupee, Zap, Flame, Smartphone, Navigation, TrendingDown, AlertCircle } from 'lucide-react';
+import { IndianRupee, Zap, Flame, Smartphone, Navigation, AlertCircle } from 'lucide-react';
 import type { OverviewData } from '../types/analytics';
 
 interface MacroKpiCardsProps {

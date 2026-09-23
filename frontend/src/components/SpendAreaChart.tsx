@@ -31,16 +31,16 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
     let gro = 0;
 
     for (const e of overview.electricity.history) {
-      if (getMonthKey(e.billingMonth) === targetMonth || getMonthKey(e.recordDate) === targetMonth) {
-        elec += (e.calculatedMyShare || 0);
+      if (getMonthKey(e.billingMonth) === targetMonth || getMonthKey(e.paidDate) === targetMonth) {
+        elec += (e.totalEbAmount || e.calculatedMyShare || 0);
       }
     }
     for (const g of overview.gas.history) {
-      if (getMonthKey(g.connectedDate) === targetMonth || getMonthKey(g.recordDate) === targetMonth) {
+      if (getMonthKey(g.connectedDate) === targetMonth || getMonthKey(g.finishedDate) === targetMonth) {
         gas += (g.bookingCost || 0);
       }
     }
-    if (overview.gas.active && (getMonthKey(overview.gas.active.connectedDate) === targetMonth || getMonthKey(overview.gas.active.recordDate) === targetMonth)) {
+    if (overview.gas.active && getMonthKey(overview.gas.active.connectedDate) === targetMonth) {
       gas += (overview.gas.active.bookingCost || 0);
     }
     for (const t of overview.telecom.records) {
