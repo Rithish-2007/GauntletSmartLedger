@@ -6,16 +6,20 @@ import { GasPage } from './pages/GasPage';
 import { TelecomPage } from './pages/TelecomPage';
 import { MobilityPage } from './pages/MobilityPage';
 import { PantryPage } from './pages/PantryPage';
+import { AuthPage } from './pages/AuthPage';
 import { QuickAddModal } from './components/modals/QuickAddModal';
-import { fetchOverview } from './services/api';
-import type { OverviewData, PageId } from './types/analytics';
+import { ResetDataModal } from './components/modals/ResetDataModal';
+import { fetchOverview, fetchCurrentUser, logoutUser, getStoredUser } from './services/api';
+import type { OverviewData, PageId, UserSummary } from './types/analytics';
 import { Shield, Cpu, ExternalLink, Zap } from 'lucide-react';
 
 export const App: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<UserSummary | null>(() => getStoredUser());
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<PageId>('dashboard');
   const [isQuickAddOpen, setIsQuickAddOpen] = useState<boolean>(false);
+  const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -25,8 +29,34 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    loadData();
+    // Initial verification of user session
+    const checkAuthAndLoad = async () => {
+      const user = await fetchCurrentUser();
+      if (user) {
+        setCurrentUser(user);
+        await loadData();
+      } else {
+        setIsLoading(false);
+      }
+    };
+    checkAuthAndLoad();
   }, []);
+
+  const handleAuthSuccess = async (user: UserSummary) => {
+    setCurrentUser(user);
+    await loadData();
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
+    setCurrentUser(null);
+    setOverview(null);
+  };
+
+  // If user is not authenticated, display the Login / Register AuthPage
+  if (!currentUser) {
+    return <AuthPage onAuthSuccess={handleAuthSuccess} />;
+  }
 
   if (!overview) {
     return (
@@ -43,12 +73,14 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans relative">
       {/* Executive Persistent Header with Page Navigation */}
       <Header
-        user={overview.user}
+        user={currentUser || overview.user}
         currentPage={currentPage}
         onNavigate={setCurrentPage}
         onRefresh={loadData}
         isLoading={isLoading}
         onOpenQuickAdd={() => setIsQuickAddOpen(true)}
+        onOpenResetModal={() => setIsResetModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* Dynamic Page Views */}
@@ -84,6 +116,16 @@ export const App: React.FC = () => {
         onSuccess={() => {
           setIsQuickAddOpen(false);
           loadData();
+        }}
+      />
+
+      {/* Universal Reset Data Modal */}
+      <ResetDataModal
+        isOpen={isResetModalOpen}
+        onClose={() => setIsResetModalOpen(false)}
+        onSuccess={(updated) => {
+          setOverview(updated);
+          setIsResetModalOpen(false);
         }}
       />
 

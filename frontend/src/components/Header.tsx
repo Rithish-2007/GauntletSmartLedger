@@ -9,6 +9,7 @@ import {
   Smartphone,
   Navigation,
   ShoppingBag,
+  RotateCcw,
 } from 'lucide-react';
 import type { UserSummary, PageId } from '../types/analytics';
 
@@ -19,6 +20,8 @@ interface HeaderProps {
   onRefresh: () => void;
   isLoading: boolean;
   onOpenQuickAdd: () => void;
+  onOpenResetModal: () => void;
+  onLogout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,8 +31,11 @@ export const Header: React.FC<HeaderProps> = ({
   onRefresh,
   isLoading,
   onOpenQuickAdd,
+  onOpenResetModal,
+  onLogout,
 }) => {
   const [time, setTime] = useState<string>('');
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -82,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
           </div>
 
-          {/* Controls: Quick Add, Refresh, Clock, User */}
+          {/* Controls: Quick Add, Reset Data, Refresh, Clock, User */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {/* Quick Add Expense Button */}
             <button
@@ -93,6 +99,16 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Add Expense</span>
             </button>
 
+            {/* Reset Data Button */}
+            <button
+              onClick={onOpenResetModal}
+              className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 text-xs font-mono transition-all cursor-pointer"
+              title="Reset or wipe database records"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
+              <span className="hidden md:inline font-medium">Reset Data</span>
+            </button>
+
             {/* Live system clock */}
             <div className="hidden md:flex items-center space-x-2 bg-zinc-900/60 border border-zinc-800/80 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-300">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -101,7 +117,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
 
             {/* Database status */}
-            <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-zinc-900/80 border-zinc-800 text-emerald-300 font-mono">
+            <div className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-medium border bg-zinc-900/80 border-zinc-800 text-emerald-300 font-mono">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span className="text-[11px]">ACTIVE LEDGER</span>
             </div>
@@ -125,15 +141,38 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Audit PDF</span>
             </button>
 
-            {/* User profile avatar */}
-            <div className="flex items-center space-x-2 pl-2 border-l border-zinc-800">
-              <div className="w-7 h-7 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-semibold text-zinc-200 font-mono">
-                {user?.fullName ? user.fullName.split(' ').map(n => n[0]).join('') : 'RK'}
-              </div>
-              <div className="hidden xl:block text-left text-xs">
-                <div className="font-medium text-zinc-200 leading-tight">{user?.fullName || 'Rithish Kumar'}</div>
-                <div className="text-[10px] text-zinc-500 font-mono">Primary Household Lead</div>
-              </div>
+            {/* User profile dropdown */}
+            <div className="relative pl-2 border-l border-zinc-800">
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center space-x-2 focus:outline-none cursor-pointer group"
+              >
+                <div className="w-7 h-7 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xs font-semibold text-emerald-300 font-mono group-hover:border-emerald-400 transition">
+                  {user?.fullName ? user.fullName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() : 'U'}
+                </div>
+                <div className="hidden xl:block text-left text-xs">
+                  <div className="font-medium text-zinc-200 leading-tight">{user?.fullName || 'Household User'}</div>
+                  <div className="text-[10px] text-zinc-500 font-mono">{user?.email || 'Active Session'}</div>
+                </div>
+              </button>
+
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-zinc-950 border border-zinc-800 rounded-xl shadow-2xl py-1 z-50 font-mono text-xs animate-in fade-in duration-150">
+                  <div className="px-3 py-2 border-b border-zinc-800">
+                    <p className="font-semibold text-white truncate">{user?.fullName || 'User'}</p>
+                    <p className="text-[10px] text-zinc-400 truncate">{user?.email}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpen(false);
+                      onLogout();
+                    }}
+                    className="w-full text-left px-3 py-2 text-rose-400 hover:bg-rose-500/10 transition-colors flex items-center space-x-2 cursor-pointer"
+                  >
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

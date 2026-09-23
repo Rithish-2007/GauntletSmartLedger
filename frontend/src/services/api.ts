@@ -52,6 +52,119 @@ export const EMPTY_DATA: OverviewData = {
   },
 };
 
+const AUTH_USER_KEY = 'smartledger_auth_user';
+
+export function getStoredUser(): { id: number; fullName: string; email: string } | null {
+  try {
+    const raw = localStorage.getItem(AUTH_USER_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn('Failed to read auth user from storage', e);
+  }
+  return null;
+}
+
+export function setStoredUser(user: { id: number; fullName: string; email: string } | null): void {
+  try {
+    if (user) {
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+    } else {
+      localStorage.removeItem(AUTH_USER_KEY);
+    }
+  } catch (e) {
+    console.warn('Failed to write auth user to storage', e);
+  }
+}
+
+export async function loginUser(email: string, password: string): Promise<{ id: number; fullName: string; email: string }> {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setStoredUser(data.user);
+      return data.user;
+    } else {
+      const err = await res.json().catch(() => ({ error: 'Login failed' }));
+      throw new Error(err.error || 'Invalid email or password');
+    }
+  } catch (e: unknown) {
+    const errorMsg = e instanceof Error ? e.message : 'Login failed';
+    if (errorMsg && !errorMsg.includes('Failed to fetch') && !errorMsg.includes('NetworkError')) {
+      throw new Error(errorMsg);
+    }
+    // Offline demo fallback login
+    if (email && password) {
+      const offlineUser = {
+        id: 1,
+        fullName: email.split('@')[0].toUpperCase(),
+        email: email.toLowerCase(),
+      };
+      setStoredUser(offlineUser);
+      return offlineUser;
+    }
+    throw new Error('Login failed. Please verify credentials.');
+  }
+}
+
+export async function registerUser(fullName: string, email: string, password: string): Promise<{ id: number; fullName: string; email: string }> {
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ fullName, email, password }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      setStoredUser(data.user);
+      return data.user;
+    } else {
+      const err = await res.json().catch(() => ({ error: 'Registration failed' }));
+      throw new Error(err.error || 'Registration failed');
+    }
+  } catch (e: unknown) {
+    const errorMsg = e instanceof Error ? e.message : 'Registration failed';
+    if (errorMsg && !errorMsg.includes('Failed to fetch') && !errorMsg.includes('NetworkError')) {
+      throw new Error(errorMsg);
+    }
+    // Offline demo fallback register
+    const offlineUser = {
+      id: Date.now(),
+      fullName,
+      email: email.toLowerCase(),
+    };
+    setStoredUser(offlineUser);
+    return offlineUser;
+  }
+}
+
+export async function logoutUser(): Promise<void> {
+  try {
+    await fetch('/api/auth/logout', { method: 'POST' });
+  } catch (e) {
+    console.warn('Backend logout failed or offline', e);
+  } finally {
+    setStoredUser(null);
+  }
+}
+
+export async function fetchCurrentUser(): Promise<{ id: number; fullName: string; email: string } | null> {
+  try {
+    const res = await fetch('/api/auth/me', { headers: { Accept: 'application/json' } });
+    if (res.ok) {
+      const user = await res.json();
+      setStoredUser(user);
+      return user;
+    }
+  } catch (e) {
+    console.warn('Failed to verify backend session, falling back to local stored user', e);
+  }
+  return getStoredUser();
+}
+
 // ---------------------------------------------------------------------------
 // Local Mirror Persistence & Dynamic Calculation Engine (Offline Resilience)
 // ---------------------------------------------------------------------------
