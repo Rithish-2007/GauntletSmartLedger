@@ -43,4 +43,16 @@ public class ElectricityCalculationEngine {
                 isShared
         );
     }
+
+    public double calculateTraditionalBill(double units) {
+        if (units < 0) {
+            throw new InvalidMeterReadingException("Units cannot be negative: " + units);
+        }
+        return tariffStrategy.calculateMasterBill(units);
+    }
+
+    public double calculateEffectiveRate(double billAmount, double units) {
+        if (units <= 0) return 0.0;
+        return billAmount / units;
+    }
 }

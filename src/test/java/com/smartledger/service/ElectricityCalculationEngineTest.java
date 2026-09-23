@@ -53,9 +53,31 @@ class ElectricityCalculationEngineTest {
     }
 
     @Test
+    void shouldCalculateTraditionalHouseholdBill() {
+        // 100 units = 50 fixed + 0 = 50.0
+        double bill100 = calculationEngine.calculateTraditionalBill(100.0);
+        assertThat(bill100).isCloseTo(50.0, within(0.01));
+
+        // 200 units = 50 fixed + 100*2.25 (225) = 275.0
+        double bill200 = calculationEngine.calculateTraditionalBill(200.0);
+        assertThat(bill200).isCloseTo(275.0, within(0.01));
+
+        // 350 units = 50 fixed + 225 + 150*4.50 (675) = 950.0
+        double bill350 = calculationEngine.calculateTraditionalBill(350.0);
+        assertThat(bill350).isCloseTo(950.0, within(0.01));
+
+        // Effective rate
+        double rate = calculationEngine.calculateEffectiveRate(950.0, 350.0);
+        assertThat(rate).isCloseTo(950.0 / 350.0, within(0.01));
+    }
+
+    @Test
     void shouldRejectNegativeMeterReadings() {
         assertThatThrownBy(() -> calculationEngine.calculateShare(200.0, -10.0, 50.0))
                 .isInstanceOf(InvalidMeterReadingException.class)
                 .hasMessageContaining("cannot be negative");
+
+        assertThatThrownBy(() -> calculationEngine.calculateTraditionalBill(-5.0))
+                .isInstanceOf(InvalidMeterReadingException.class);
     }
 }
