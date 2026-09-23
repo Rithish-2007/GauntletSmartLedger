@@ -41,11 +41,11 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
         </div>
       </div>
 
-      {/* 2. Electricity Sub-Meter Share */}
+      {/* 2. Household Electricity */}
       <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-zinc-400">EB Fair-Share</span>
+          <span className="text-xs font-medium text-zinc-400">Household Electricity</span>
           <div className="p-1.5 rounded-md bg-cyan-500/10 text-cyan-400">
             <Zap className="w-4 h-4" />
           </div>
@@ -57,38 +57,44 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
           <span className="text-cyan-400 font-mono">
-            {electricity.latest ? `${electricity.latest.mySubmeterUnits} kWh share` : '0 kWh'}
+            {electricity.latest ? `${electricity.latest.mySubmeterUnits} kWh billed` : '0 kWh'}
           </span>
           <span className="text-zinc-500 font-mono">
-            {electricity.latest ? `Master: ${electricity.latest.masterEbUnits}U` : 'No bills logged'}
+            {electricity.latest ? `${electricity.latest.billingMonth}` : 'No bills logged'}
           </span>
         </div>
       </div>
 
-      {/* 3. LPG Cylinder Depletion */}
+      {/* 3. LPG Cylinder Reserve */}
       <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-zinc-400">LPG Cylinder Reserve</span>
+          <span className="text-xs font-medium text-zinc-400">LPG Cylinder</span>
           <div className="p-1.5 rounded-md bg-amber-500/10 text-amber-400">
             <Flame className="w-4 h-4" />
           </div>
         </div>
         <div className="flex items-baseline space-x-1.5">
           <span className={`text-2xl font-bold tracking-tight tabular-nums font-mono ${gas.active ? 'text-white' : 'text-zinc-500'}`}>
-            {gas.active ? (gas.forecast?.daysRemaining !== undefined ? gas.forecast.daysRemaining : '--') : '0'}
+            {gas.active
+              ? (gas.forecast?.burnRateKgPerDay && gas.forecast.burnRateKgPerDay > 0
+                  ? gas.forecast.daysRemaining
+                  : `Day ${Math.max(1, Math.floor((new Date().getTime() - new Date(gas.active.connectedDate).getTime()) / (1000 * 3600 * 24)))}`)
+              : '0'}
           </span>
           <span className="text-xs text-zinc-400 font-medium">
-            {gas.active ? 'Days Left' : 'Days (No Cylinder)'}
+            {gas.active
+              ? (gas.forecast?.burnRateKgPerDay && gas.forecast.burnRateKgPerDay > 0 ? 'Days Left' : 'In-Use')
+              : 'Days (None)'}
           </span>
         </div>
         <div className="mt-2 flex items-center justify-between text-[11px]">
           <span className="text-amber-400 font-mono">
             {gas.active
-              ? (gas.forecast?.burnRateKgPerDay
+              ? (gas.forecast?.burnRateKgPerDay && gas.forecast.burnRateKgPerDay > 0
                   ? `${gas.forecast.burnRateKgPerDay.toFixed(2)} kg/d`
-                  : 'In Use')
-              : 'No Active Cylinder'}
+                  : 'Active Cycle')
+              : 'No Active Unit'}
           </span>
           <span className="text-zinc-500 font-mono">
             {gas.active ? `${gas.active.cylinderWeightKg} kg` : '0 kg'}

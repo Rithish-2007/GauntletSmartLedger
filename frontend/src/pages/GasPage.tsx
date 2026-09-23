@@ -97,13 +97,21 @@ export const GasPage: React.FC<GasPageProps> = ({ overview, onRefresh }) => {
           <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">BURN VELOCITY</span>
             <span className="text-base font-bold text-amber-400 font-mono tabular-nums">
-              {forecast?.burnRateKgPerDay ? `${forecast.burnRateKgPerDay.toFixed(3)} kg/d` : '0.000 kg/d'}
+              {forecast?.burnRateKgPerDay && forecast.burnRateKgPerDay > 0
+                ? `${forecast.burnRateKgPerDay.toFixed(3)} kg/d`
+                : active
+                ? 'Tracking Cycle'
+                : '0.000 kg/d'}
             </span>
           </div>
           <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
-            <span className="text-zinc-500 block text-[10px]">EST. DEPLETION</span>
+            <span className="text-zinc-500 block text-[10px]">{forecast?.burnRateKgPerDay && forecast.burnRateKgPerDay > 0 ? 'EST. DEPLETION' : 'STATUS'}</span>
             <span className="text-base font-bold text-white font-mono">
-              {forecast?.predictedDepletionDate || 'None (Inactive)'}
+              {forecast?.burnRateKgPerDay && forecast.burnRateKgPerDay > 0
+                ? (forecast.predictedDepletionDate || 'Calculating...')
+                : active
+                ? `Active (Conn: ${active.connectedDate})`
+                : 'Offline'}
             </span>
           </div>
           <button
@@ -199,12 +207,22 @@ export const GasPage: React.FC<GasPageProps> = ({ overview, onRefresh }) => {
                 <span className="text-[10px] text-zinc-400 block mt-0.5">Domestic Spec</span>
               </div>
               <div className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800/80">
-                <span className="text-zinc-500 block text-[10px]">DAYS REMAINING</span>
-                <span className={`text-lg font-bold tabular-nums ${(forecast?.daysRemaining ?? 0) <= 5 ? 'text-amber-400' : 'text-emerald-400'}`}>
-                  {forecast?.daysRemaining !== undefined ? `${forecast.daysRemaining} Days` : 'N/A'}
+                <span className="text-zinc-500 block text-[10px]">
+                  {forecast?.burnRateKgPerDay && forecast.burnRateKgPerDay > 0 ? 'DAYS REMAINING' : 'LIFECYCLE STATUS'}
+                </span>
+                <span className={`text-lg font-bold tabular-nums ${(forecast?.daysRemaining ?? 0) <= 5 && (forecast?.burnRateKgPerDay ?? 0) > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  {forecast?.burnRateKgPerDay && forecast.burnRateKgPerDay > 0
+                    ? `${forecast.daysRemaining} Days`
+                    : active
+                    ? 'Active In-Use'
+                    : 'Offline'}
                 </span>
                 <span className="text-[10px] text-zinc-400 block mt-0.5">
-                  {(forecast?.daysRemaining ?? 0) <= 5 ? 'Refill Recommended' : 'Optimal Reserve'}
+                  {forecast?.burnRateKgPerDay && forecast.burnRateKgPerDay > 0
+                    ? (forecast.daysRemaining <= 5 ? 'Refill Recommended' : 'Optimal Reserve')
+                    : active
+                    ? `Connected ${active.connectedDate}`
+                    : 'No Active Cylinder'}
                 </span>
               </div>
               <div className="bg-zinc-900/60 p-3 rounded-lg border border-zinc-800/80">
