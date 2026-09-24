@@ -13,13 +13,60 @@ import { fetchOverview, fetchCurrentUser, logoutUser, getStoredUser } from './se
 import type { OverviewData, PageId, UserSummary } from './types/analytics';
 import { Shield, Cpu, ExternalLink, Zap } from 'lucide-react';
 
+const VALID_PAGES: Record<string, PageId> = {
+  '': 'dashboard',
+  'dashboard': 'dashboard',
+  'electricity': 'electricity',
+  'gas': 'gas',
+  'telecom': 'telecom',
+  'mobility': 'mobility',
+  'transport': 'mobility',
+  'pantry': 'pantry',
+  'grocery': 'pantry',
+};
+
+function getPageFromUrl(): PageId {
+  if (typeof window === 'undefined') return 'dashboard';
+  if (window.location.hash) {
+    const hashClean = window.location.hash.replace(/^#[/]?/, '').toLowerCase();
+    if (VALID_PAGES[hashClean]) return VALID_PAGES[hashClean];
+  }
+  const pathClean = window.location.pathname.replace(/^\/|\/$/g, '').toLowerCase();
+  if (VALID_PAGES[pathClean]) return VALID_PAGES[pathClean];
+  return 'dashboard';
+}
+
 export const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<UserSummary | null>(() => getStoredUser());
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [currentPage, setCurrentPage] = useState<PageId>('dashboard');
+  const [currentPage, setCurrentPage] = useState<PageId>(() => getPageFromUrl());
   const [isQuickAddOpen, setIsQuickAddOpen] = useState<boolean>(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState<boolean>(false);
+
+  const handleNavigate = (page: PageId) => {
+    setCurrentPage(page);
+    try {
+      const targetPath = page === 'dashboard' ? '/' : `/${page}`;
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({ page }, '', targetPath);
+      }
+    } catch {
+      // Safe fallback
+    }
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPage(getPageFromUrl());
+    };
+    window.addEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      window.removeEventListener('hashchange', handlePopState);
+    };
+  }, []);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -69,13 +116,15 @@ export const App: React.FC = () => {
     );
   }
 
+  const isLocalHost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
   return (
     <div className="min-h-screen bg-[#09090b] text-zinc-100 flex flex-col font-sans relative">
       {/* Executive Persistent Header with Page Navigation */}
       <Header
         user={currentUser || overview.user}
         currentPage={currentPage}
-        onNavigate={setCurrentPage}
+        onNavigate={handleNavigate}
         onRefresh={loadData}
         isLoading={isLoading}
         onOpenQuickAdd={() => setIsQuickAddOpen(true)}
@@ -88,7 +137,7 @@ export const App: React.FC = () => {
         {currentPage === 'dashboard' && (
           <DashboardPage
             overview={overview}
-            onNavigate={setCurrentPage}
+            onNavigate={handleNavigate}
             onOpenQuickAdd={() => setIsQuickAddOpen(true)}
           />
         )}
@@ -148,12 +197,18 @@ export const App: React.FC = () => {
             </span>
             <span>•</span>
             <a
-              href="http://localhost:8080/dashboard"
-              target="_blank"
+              href={isLocalHost ? 'http://localhost:8080/dashboard' : '#'}
+              onClick={(e) => {
+                if (!isLocalHost) {
+                  e.preventDefault();
+                  handleNavigate('dashboard');
+                }
+              }}
+              target={isLocalHost ? '_blank' : undefined}
               rel="noreferrer"
               className="text-zinc-400 hover:text-white flex items-center gap-1 transition-colors"
             >
-              <span>Thymeleaf Legacy</span>
+              <span>{isLocalHost ? 'Thymeleaf Legacy' : 'Hub Console'}</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>

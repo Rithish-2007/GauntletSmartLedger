@@ -124,7 +124,7 @@ public class ViewController {
         return "redirect:/telecom";
     }
 
-    @GetMapping("/transport")
+    @GetMapping({"/transport", "/mobility"})
     public String transportPage(HttpSession session, Model model) {
         User user = getSessionUser(session);
         if (user == null) return "redirect:/login";
@@ -134,7 +134,7 @@ public class ViewController {
         return "transport";
     }
 
-    @PostMapping("/transport/add")
+    @PostMapping({"/transport/add", "/mobility/add"})
     public String addTrip(@RequestParam CommuteType type, @RequestParam String personName,
                           @RequestParam(required = false) String origin, @RequestParam(required = false) String destination,
                           @RequestParam double distanceKm, @RequestParam(required = false) Double liters,
@@ -147,7 +147,7 @@ public class ViewController {
         return "redirect:/transport";
     }
 
-    @GetMapping("/grocery")
+    @GetMapping({"/grocery", "/pantry"})
     public String groceryPage(HttpSession session, Model model) {
         User user = getSessionUser(session);
         if (user == null) return "redirect:/login";
