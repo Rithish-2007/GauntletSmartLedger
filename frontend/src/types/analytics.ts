@@ -125,8 +125,20 @@ export interface SubMeterSimResult {
   isShared: boolean;
 }
 
+export interface TariffSlabItem {
+  id: string;
+  label: string;
+  rangeLabel: string;
+  units: number;
+  rate: number;
+  cost: number;
+  color: string;
+}
+
 export interface TraditionalTariffBreakdown {
   units: number;
+  category: 'A' | 'B';
+  categoryLabel: string;
   fixedCharge: number;
   freeUnits: number;
   tier1Units: number;
@@ -141,6 +153,7 @@ export interface TraditionalTariffBreakdown {
   totalBill: number;
   effectiveRate: number;
   subsidySavings: number;
+  activeSlabs: TariffSlabItem[];
 }
 
 export type PageId = 'dashboard' | 'electricity' | 'gas' | 'telecom' | 'mobility' | 'pantry';

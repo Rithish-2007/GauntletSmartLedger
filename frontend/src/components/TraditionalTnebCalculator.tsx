@@ -136,50 +136,87 @@ export const TraditionalTnebCalculator: React.FC = () => {
 
           {/* Progressive Slab Visualizer */}
           <div className="bg-zinc-900/60 p-3.5 rounded-xl border border-zinc-800/80 space-y-2">
-            <span className="text-[11px] text-zinc-400 font-mono font-medium block">
-              Progressive Slab Energy Allocation
-            </span>
-            <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden flex">
-              <div
-                style={{ width: `${Math.min(100, (breakdown.freeUnits / Math.max(1, units)) * 100)}%` }}
-                className="bg-emerald-500 transition-all duration-300"
-                title={`Free Tier: ${breakdown.freeUnits}U (₹0)`}
-              />
-              <div
-                style={{ width: `${Math.min(100, (breakdown.tier1Units / Math.max(1, units)) * 100)}%` }}
-                className="bg-cyan-400 transition-all duration-300"
-                title={`Tier 1: ${breakdown.tier1Units}U @ ₹2.25`}
-              />
-              <div
-                style={{ width: `${Math.min(100, (breakdown.tier2Units / Math.max(1, units)) * 100)}%` }}
-                className="bg-amber-400 transition-all duration-300"
-                title={`Tier 2: ${breakdown.tier2Units}U @ ₹4.50`}
-              />
-              <div
-                style={{ width: `${Math.min(100, (breakdown.tier3Units / Math.max(1, units)) * 100)}%` }}
-                className="bg-rose-500 transition-all duration-300"
-                title={`Tier 3: ${breakdown.tier3Units}U @ ₹6.00`}
-              />
+            <div className="flex items-center justify-between text-[11px] font-mono">
+              <span className="text-zinc-400 font-medium">
+                Progressive Slab Energy Allocation
+              </span>
+              <span className={`text-[10px] px-2 py-0.5 rounded border font-semibold ${
+                breakdown.category === 'A'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                  : 'bg-amber-500/10 text-amber-400 border-amber-500/30'
+              }`}>
+                {breakdown.category === 'A' ? 'Tier A (≤ 500U)' : 'Tier B (> 500U)'}
+              </span>
             </div>
 
-            <div className="grid grid-cols-4 gap-1 text-[10px] font-mono text-zinc-400 pt-1">
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span>0-100U: Free</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
-                <span>101-200U: ₹2.25</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-                <span>201-500U: ₹4.50</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                <span>&gt;500U: ₹6.00</span>
-              </div>
+            {/* Dynamic Energy Bar */}
+            <div className="w-full bg-zinc-800 h-2.5 rounded-full overflow-hidden flex">
+              {breakdown.activeSlabs.map((slab) => {
+                const pct = Math.min(100, (slab.units / Math.max(1, units)) * 100);
+                if (pct <= 0) return null;
+                return (
+                  <div
+                    key={slab.id}
+                    style={{ width: `${pct}%` }}
+                    className={`${slab.color} transition-all duration-300`}
+                    title={`${slab.label}: ${slab.units}U (₹${slab.cost.toFixed(2)})`}
+                  />
+                );
+              })}
             </div>
+
+            {/* Dynamic Legend based on Category */}
+            {breakdown.category === 'A' ? (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 text-[10px] font-mono text-zinc-400 pt-1">
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>0-100U: Free</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>101-200U: ₹2.35</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span>201-400U: ₹4.70</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span>401-500U: ₹6.30</span>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 text-[9px] font-mono text-zinc-400 pt-1">
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  <span>0-100U: Free</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-cyan-400"></span>
+                  <span>101-400U: ₹4.70</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span>401-500U: ₹6.30</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                  <span>501-600U: ₹8.40</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-rose-500"></span>
+                  <span>601-800U: ₹9.45</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                  <span>801-1000U: ₹10.50</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-red-600"></span>
+                  <span>&gt;1000U: ₹11.55</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -226,39 +263,27 @@ export const TraditionalTnebCalculator: React.FC = () => {
               </span>
             </div>
 
-            <div className="space-y-1.5 text-xs font-mono text-zinc-300">
+            <div className="space-y-1.5 text-xs font-mono text-zinc-300 max-h-48 overflow-y-auto pr-1">
               <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
                 <span className="text-zinc-400">Fixed Meter Charge</span>
                 <span className="text-white font-bold">₹{breakdown.fixedCharge.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
-                <span className="text-emerald-400">0 - 100 kWh (Free Subsidy Tier)</span>
-                <span className="text-emerald-400 font-bold">{breakdown.freeUnits}U @ ₹0.00 = ₹0.00</span>
-              </div>
-              {breakdown.tier1Units > 0 && (
-                <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
-                  <span className="text-cyan-400">101 - 200 kWh (Tier 1 @ ₹2.25)</span>
-                  <span className="text-white font-bold">{breakdown.tier1Units}U = ₹{breakdown.tier1Cost.toFixed(2)}</span>
+              {breakdown.activeSlabs.map((slab) => (
+                <div key={slab.id} className="flex justify-between items-center py-1 border-b border-zinc-800/60">
+                  <span className={slab.id === 'free' ? 'text-emerald-400 font-medium' : 'text-zinc-300'}>
+                    {slab.label}
+                  </span>
+                  <span className={slab.id === 'free' ? 'text-emerald-400 font-bold' : 'text-white font-bold'}>
+                    {slab.units}U {slab.rate > 0 ? `@ ₹${slab.rate.toFixed(2)} = ` : '= '}₹{slab.cost.toFixed(2)}
+                  </span>
                 </div>
-              )}
-              {breakdown.tier2Units > 0 && (
-                <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
-                  <span className="text-amber-400">201 - 500 kWh (Tier 2 @ ₹4.50)</span>
-                  <span className="text-white font-bold">{breakdown.tier2Units}U = ₹{breakdown.tier2Cost.toFixed(2)}</span>
-                </div>
-              )}
-              {breakdown.tier3Units > 0 && (
-                <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
-                  <span className="text-rose-400">&gt; 500 kWh (Tier 3 @ ₹6.00)</span>
-                  <span className="text-white font-bold">{breakdown.tier3Units}U = ₹{breakdown.tier3Cost.toFixed(2)}</span>
-                </div>
-              )}
+              ))}
             </div>
 
             <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-zinc-400">
               <span className="flex items-center gap-1 text-emerald-400">
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Standard Domestic Household Tariff</span>
+                <span>{breakdown.categoryLabel}</span>
               </span>
               <span className="text-white font-bold text-sm">
                 Total: ₹{breakdown.totalBill.toFixed(2)}

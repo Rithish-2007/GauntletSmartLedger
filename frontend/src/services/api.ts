@@ -2,6 +2,7 @@ import type {
   OverviewData,
   SubMeterSimResult,
   TraditionalTariffBreakdown,
+  TariffSlabItem,
   AddElectricityInput,
   AddTelecomInput,
   AddTravelInput,
@@ -138,6 +139,29 @@ export async function registerUser(fullName: string, email: string, password: st
     };
     setStoredUser(offlineUser);
     return offlineUser;
+  }
+}
+
+export async function resetPasswordUser(email: string, newPassword: string): Promise<string> {
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ email, newPassword }),
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data.message || 'Password reset successfully.';
+    } else {
+      const err = await res.json().catch(() => ({ error: 'Password reset failed' }));
+      throw new Error(err.error || 'Password reset failed');
+    }
+  } catch (e: unknown) {
+    const errorMsg = e instanceof Error ? e.message : 'Password reset failed';
+    if (errorMsg && !errorMsg.includes('Failed to fetch') && !errorMsg.includes('NetworkError')) {
+      throw new Error(errorMsg);
+    }
+    return 'Password reset successfully (Offline mirror). You can now log in.';
   }
 }
 
@@ -643,73 +667,327 @@ export async function seedDemoData(): Promise<OverviewData> {
 }
 
 export function calculateTnebBill(units: number): number {
-  if (units <= 100) return 0;
-  if (units <= 200) return (units - 100) * 2.25;
-  if (units <= 400) return 100 * 2.25 + (units - 200) * 4.50;
-  if (units <= 500) return 100 * 2.25 + 200 * 4.50 + (units - 400) * 6.00;
-  if (units <= 600) return 300 * 4.50 + 100 * 6.00 + (units - 500) * 8.00;
-  if (units <= 800) return 300 * 4.50 + 100 * 6.00 + 100 * 8.00 + (units - 600) * 9.00;
-  if (units <= 1000) return 300 * 4.50 + 100 * 6.00 + 100 * 8.00 + 200 * 9.00 + (units - 800) * 10.00;
-  return 300 * 4.50 + 100 * 6.00 + 100 * 8.00 + 200 * 9.00 + 200 * 10.00 + (units - 1000) * 11.00;
+  if (units <= 0) return 50.0;
+  let bill = 50.0; // Fixed meter charge
+
+  if (units <= 500) {
+    // Category A: up to 500 units
+    let rem = units;
+    const free = Math.min(rem, 100);
+    rem -= free;
+
+    // 101 - 200: ₹2.35
+    if (rem > 0) {
+      const t1 = Math.min(rem, 100);
+      bill += t1 * 2.35;
+      rem -= t1;
+    }
+    // 201 - 400: ₹4.70
+    if (rem > 0) {
+      const t2 = Math.min(rem, 200);
+      bill += t2 * 4.70;
+      rem -= t2;
+    }
+    // 401 - 500: ₹6.30
+    if (rem > 0) {
+      bill += rem * 6.30;
+    }
+  } else {
+    // Category B: above 500 units
+    let rem = units;
+    const free = Math.min(rem, 100);
+    rem -= free;
+
+    // 101 - 400: ₹4.70 (300 units)
+    if (rem > 0) {
+      const t1 = Math.min(rem, 300);
+      bill += t1 * 4.70;
+      rem -= t1;
+    }
+    // 401 - 500: ₹6.30 (100 units)
+    if (rem > 0) {
+      const t2 = Math.min(rem, 100);
+      bill += t2 * 6.30;
+      rem -= t2;
+    }
+    // 501 - 600: ₹8.40 (100 units)
+    if (rem > 0) {
+      const t3 = Math.min(rem, 100);
+      bill += t3 * 8.40;
+      rem -= t3;
+    }
+    // 601 - 800: ₹9.45 (200 units)
+    if (rem > 0) {
+      const t4 = Math.min(rem, 200);
+      bill += t4 * 9.45;
+      rem -= t4;
+    }
+    // 801 - 1000: ₹10.50 (200 units)
+    if (rem > 0) {
+      const t5 = Math.min(rem, 200);
+      bill += t5 * 10.50;
+      rem -= t5;
+    }
+    // Above 1000: ₹11.55
+    if (rem > 0) {
+      bill += rem * 11.55;
+    }
+  }
+
+  return Math.round(bill * 100) / 100;
 }
 
 export function calculateTraditionalTnebBreakdown(units: number): TraditionalTariffBreakdown {
   const fixedCharge = 50.0;
+  const isCategoryA = units <= 500;
+  const category: 'A' | 'B' = isCategoryA ? 'A' : 'B';
+  const categoryLabel = isCategoryA
+    ? 'Category A (Consumption up to 500 kWh)'
+    : 'Category B (Consumption above 500 kWh)';
+
   if (units <= 0) {
     return {
       units: 0,
+      category,
+      categoryLabel,
       fixedCharge,
       freeUnits: 0,
       tier1Units: 0,
-      tier1Rate: 2.25,
+      tier1Rate: 2.35,
       tier1Cost: 0,
       tier2Units: 0,
-      tier2Rate: 4.50,
+      tier2Rate: 4.70,
       tier2Cost: 0,
       tier3Units: 0,
-      tier3Rate: 6.00,
+      tier3Rate: 6.30,
       tier3Cost: 0,
       totalBill: fixedCharge,
       effectiveRate: 0,
       subsidySavings: 0,
+      activeSlabs: [
+        {
+          id: 'free',
+          label: '0 - 100 kWh (Free Subsidy Tier)',
+          rangeLabel: '0–100U',
+          units: 0,
+          rate: 0,
+          cost: 0,
+          color: 'bg-emerald-500',
+        },
+      ],
     };
   }
 
   const freeUnits = Math.min(units, 100);
   let rem = units - freeUnits;
+  const activeSlabs: TariffSlabItem[] = [
+    {
+      id: 'free',
+      label: '0 - 100 kWh (Free Subsidy Tier)',
+      rangeLabel: '0–100U',
+      units: freeUnits,
+      rate: 0,
+      cost: 0,
+      color: 'bg-emerald-500',
+    },
+  ];
 
-  const tier1Units = Math.min(rem, 100);
-  const tier1Cost = tier1Units * 2.25;
-  rem -= tier1Units;
+  let energyCost = 0;
+  let tier1Units = 0;
+  let tier1Rate = 2.35;
+  let tier1Cost = 0;
+  let tier2Units = 0;
+  let tier2Rate = 4.70;
+  let tier2Cost = 0;
+  let tier3Units = 0;
+  let tier3Rate = 6.30;
+  let tier3Cost = 0;
 
-  const tier2Units = Math.min(rem, 300);
-  const tier2Cost = tier2Units * 4.50;
-  rem -= tier2Units;
+  if (isCategoryA) {
+    // 101 - 200: ₹2.35
+    if (rem > 0) {
+      tier1Units = Math.min(rem, 100);
+      tier1Rate = 2.35;
+      tier1Cost = tier1Units * 2.35;
+      energyCost += tier1Cost;
+      rem -= tier1Units;
+      activeSlabs.push({
+        id: 'tier1',
+        label: '101 - 200 kWh (Tier 1 @ ₹2.35)',
+        rangeLabel: '101–200U',
+        units: tier1Units,
+        rate: 2.35,
+        cost: tier1Cost,
+        color: 'bg-cyan-400',
+      });
+    }
 
-  const tier3Units = Math.max(0, rem);
-  const tier3Cost = tier3Units * 6.00;
+    // 201 - 400: ₹4.70
+    if (rem > 0) {
+      tier2Units = Math.min(rem, 200);
+      tier2Rate = 4.70;
+      tier2Cost = tier2Units * 4.70;
+      energyCost += tier2Cost;
+      rem -= tier2Units;
+      activeSlabs.push({
+        id: 'tier2',
+        label: '201 - 400 kWh (Tier 2 @ ₹4.70)',
+        rangeLabel: '201–400U',
+        units: tier2Units,
+        rate: 4.70,
+        cost: tier2Cost,
+        color: 'bg-amber-400',
+      });
+    }
 
-  const energyCost = tier1Cost + tier2Cost + tier3Cost;
-  const totalBill = fixedCharge + energyCost;
+    // 401 - 500: ₹6.30
+    if (rem > 0) {
+      tier3Units = Math.min(rem, 100);
+      tier3Rate = 6.30;
+      tier3Cost = tier3Units * 6.30;
+      energyCost += tier3Cost;
+      rem -= tier3Units;
+      activeSlabs.push({
+        id: 'tier3',
+        label: '401 - 500 kWh (Tier 3 @ ₹6.30)',
+        rangeLabel: '401–500U',
+        units: tier3Units,
+        rate: 6.30,
+        cost: tier3Cost,
+        color: 'bg-rose-500',
+      });
+    }
+  } else {
+    // Category B (> 500 units)
+    // 101 - 400: ₹4.70 (300 units)
+    if (rem > 0) {
+      tier1Units = Math.min(rem, 300);
+      tier1Rate = 4.70;
+      tier1Cost = tier1Units * 4.70;
+      energyCost += tier1Cost;
+      rem -= tier1Units;
+      activeSlabs.push({
+        id: 'catB_tier1',
+        label: '101 - 400 kWh (Slab @ ₹4.70)',
+        rangeLabel: '101–400U',
+        units: tier1Units,
+        rate: 4.70,
+        cost: tier1Cost,
+        color: 'bg-cyan-400',
+      });
+    }
+
+    // 401 - 500: ₹6.30 (100 units)
+    if (rem > 0) {
+      tier2Units = Math.min(rem, 100);
+      tier2Rate = 6.30;
+      tier2Cost = tier2Units * 6.30;
+      energyCost += tier2Cost;
+      rem -= tier2Units;
+      activeSlabs.push({
+        id: 'catB_tier2',
+        label: '401 - 500 kWh (Slab @ ₹6.30)',
+        rangeLabel: '401–500U',
+        units: tier2Units,
+        rate: 6.30,
+        cost: tier2Cost,
+        color: 'bg-amber-400',
+      });
+    }
+
+    // 501 - 600: ₹8.40 (100 units)
+    if (rem > 0) {
+      tier3Units = Math.min(rem, 100);
+      tier3Rate = 8.40;
+      tier3Cost = tier3Units * 8.40;
+      energyCost += tier3Cost;
+      rem -= tier3Units;
+      activeSlabs.push({
+        id: 'catB_tier3',
+        label: '501 - 600 kWh (Slab @ ₹8.40)',
+        rangeLabel: '501–600U',
+        units: tier3Units,
+        rate: 8.40,
+        cost: tier3Cost,
+        color: 'bg-orange-500',
+      });
+    }
+
+    // 601 - 800: ₹9.45 (200 units)
+    if (rem > 0) {
+      const u = Math.min(rem, 200);
+      const c = u * 9.45;
+      energyCost += c;
+      rem -= u;
+      activeSlabs.push({
+        id: 'catB_tier4',
+        label: '601 - 800 kWh (Slab @ ₹9.45)',
+        rangeLabel: '601–800U',
+        units: u,
+        rate: 9.45,
+        cost: c,
+        color: 'bg-rose-500',
+      });
+    }
+
+    // 801 - 1000: ₹10.50 (200 units)
+    if (rem > 0) {
+      const u = Math.min(rem, 200);
+      const c = u * 10.50;
+      energyCost += c;
+      rem -= u;
+      activeSlabs.push({
+        id: 'catB_tier5',
+        label: '801 - 1000 kWh (Slab @ ₹10.50)',
+        rangeLabel: '801–1000U',
+        units: u,
+        rate: 10.50,
+        cost: c,
+        color: 'bg-purple-500',
+      });
+    }
+
+    // Above 1000: ₹11.55
+    if (rem > 0) {
+      const u = rem;
+      const c = u * 11.55;
+      energyCost += c;
+      activeSlabs.push({
+        id: 'catB_tier6',
+        label: 'Above 1000 kWh (Slab @ ₹11.55)',
+        rangeLabel: '>1000U',
+        units: u,
+        rate: 11.55,
+        cost: c,
+        color: 'bg-red-600',
+      });
+    }
+  }
+
+  const totalBill = Math.round((fixedCharge + energyCost) * 100) / 100;
   const effectiveRate = units > 0 ? totalBill / units : 0;
-  const subsidySavings = freeUnits * 2.25;
+  // Subsidy saved: In Category A, 100 free units at tier1 rate (2.35); in Cat B, at 4.70
+  const subsidySavings = isCategoryA ? freeUnits * 2.35 : freeUnits * 4.70;
 
   return {
     units,
+    category,
+    categoryLabel,
     fixedCharge,
     freeUnits,
     tier1Units,
-    tier1Rate: 2.25,
+    tier1Rate,
     tier1Cost,
     tier2Units,
-    tier2Rate: 4.50,
+    tier2Rate,
     tier2Cost,
     tier3Units,
-    tier3Rate: 6.00,
+    tier3Rate,
     tier3Cost,
     totalBill,
     effectiveRate,
     subsidySavings,
+    activeSlabs,
   };
 }
 

@@ -52,9 +52,16 @@ class UserServiceTest {
     void shouldRejectDuplicateEmailRegistration() {
         when(userRepository.findByEmail("existing@example.com")).thenReturn(Optional.of(new User()));
 
-        assertThatThrownBy(() -> userService.registerUser("Jane", "existing@example.com", "password123"))
+        assertThatThrownBy(() -> userService.registerUser("Jane", "existing@example.com", "ValidPass123!"))
                 .isInstanceOf(UtilityValidationException.class)
                 .hasMessageContaining("Email already registered");
+    }
+
+    @Test
+    void shouldRejectWeakPasswordOnRegistration() {
+        assertThatThrownBy(() -> userService.registerUser("Jane", "jane@example.com", "weak"))
+                .isInstanceOf(UtilityValidationException.class)
+                .hasMessageContaining("Password must contain");
     }
 
     @Test
@@ -78,5 +85,23 @@ class UserServiceTest {
         Optional<User> result = userService.authenticateUser("john@example.com", "WrongPass");
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void shouldResetPasswordWithValidComplexity() {
+        User user = new User("John", "john@example.com", "oldHash");
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArgument(0));
+
+        User updated = userService.resetPassword("john@example.com", "NewP@ssword99#");
+
+        assertThat(passwordEncoder.matches("NewP@ssword99#", updated.getPasswordHash())).isTrue();
+    }
+
+    @Test
+    void shouldRejectWeakPasswordOnReset() {
+        assertThatThrownBy(() -> userService.resetPassword("john@example.com", "nopassword"))
+                .isInstanceOf(UtilityValidationException.class)
+                .hasMessageContaining("Password must contain");
     }
 }

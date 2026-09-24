@@ -24,6 +24,22 @@ public class RestAuthController {
 
     public record LoginRequest(String email, String password) {}
     public record RegisterRequest(String fullName, String email, String password) {}
+    public record ForgotPasswordRequest(String email, String newPassword) {}
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request) {
+        if (request.email() == null || request.email().isBlank() ||
+            request.newPassword() == null || request.newPassword().isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email and new password are required"));
+        }
+
+        try {
+            userService.resetPassword(request.email(), request.newPassword());
+            return ResponseEntity.ok(Map.of("message", "Password reset successfully. You can now log in with your new password."));
+        } catch (UtilityValidationException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        }
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpSession session) {

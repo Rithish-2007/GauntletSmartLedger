@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import type { UserSummary, PageId } from '../types/analytics';
 
+import { GoldenThunderLogo } from './GoldenThunderLogo';
+
 interface HeaderProps {
   user?: UserSummary;
   currentPage: PageId;
@@ -69,20 +71,18 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Top Navbar Row */}
         <div className="h-16 flex items-center justify-between">
           {/* Brand Logo & Name */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => onNavigate('dashboard')}>
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shadow-sm">
-              <Zap className="w-4 h-4 text-emerald-400" />
-            </div>
+          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => onNavigate('dashboard')}>
+            <GoldenThunderLogo size="md" />
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-semibold text-base tracking-tight text-white font-sans">
-                  SmartLedger<span className="text-emerald-400">™</span>
+                <span className="font-bold text-base tracking-tight text-white font-sans group-hover:text-amber-100 transition-colors">
+                  GauntletSmartLedger<span className="text-amber-400">™</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800/80 text-zinc-300 border border-zinc-700/50">
+                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">
                   EXECUTIVE
                 </span>
               </div>
-              <p className="text-[11px] text-zinc-400 hidden sm:block tracking-tight">
+              <p className="text-[11px] text-zinc-400 hidden sm:block tracking-tight font-mono">
                 Household Utility Intelligence Matrix
               </p>
             </div>

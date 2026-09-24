@@ -85,6 +85,18 @@ class RestAuthControllerTest {
     }
 
     @Test
+    void testRegisterWeakPasswordRejection() throws Exception {
+        when(userService.registerUser(eq("Jane Doe"), eq("jane@test.com"), eq("weak")))
+                .thenThrow(new UtilityValidationException("Password must contain at least 8 characters"));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fullName\":\"Jane Doe\",\"email\":\"jane@test.com\",\"password\":\"weak\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Password must contain at least 8 characters"));
+    }
+
+    @Test
     void testMeAuthenticated() throws Exception {
         User user = new User("Rithish Kumar", "rithish@test.com", "hashedPass");
         MockHttpSession session = new MockHttpSession();

@@ -3,6 +3,7 @@ package com.smartledger.service;
 import com.smartledger.domain.User;
 import com.smartledger.exception.UtilityValidationException;
 import com.smartledger.repository.UserRepository;
+import com.smartledger.util.PasswordValidator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,7 @@ public class UserService {
         if (email == null || !email.contains("@")) {
             throw new UtilityValidationException("Valid email is required");
         }
-        if (rawPassword == null || rawPassword.length() < 6) {
-            throw new UtilityValidationException("Password must be at least 6 characters");
-        }
+        PasswordValidator.validate(rawPassword);
         if (userRepository.findByEmail(email).isPresent()) {
             throw new UtilityValidationException("Email already registered: " + email);
         }
@@ -48,5 +47,17 @@ public class UserService {
 
     public Optional<User> findById(Long userId) {
         return userRepository.findById(userId);
+    }
+
+    @Transactional
+    public User resetPassword(String email, String newRawPassword) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new UtilityValidationException("Email is required");
+        }
+        PasswordValidator.validate(newRawPassword);
+        User user = userRepository.findByEmail(email.trim().toLowerCase())
+                .orElseThrow(() -> new UtilityValidationException("No account found with email: " + email));
+        user.setPasswordHash(passwordEncoder.encode(newRawPassword));
+        return userRepository.save(user);
     }
 }

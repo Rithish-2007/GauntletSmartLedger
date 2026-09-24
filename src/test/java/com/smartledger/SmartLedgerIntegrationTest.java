@@ -41,9 +41,9 @@ class SmartLedgerIntegrationTest {
         User user = userService.registerUser("Test User", "test@smartledger.local", "Password123!");
         assertThat(user.getUserId()).isNotNull();
 
-        // 2. Electricity Fair Split (Master 350 units @ 950 total, my 140 / 350 -> share 380)
+        // 2. Electricity Fair Split (Master 350 units @ 990 total, my 140 / 350 -> share 396)
         var elec = electricityService.addRecord(user, "2026-09", 350.0, 140.0, 210.0, LocalDate.now());
-        assertThat(elec.getCalculatedMyShare()).isEqualTo(380.0);
+        assertThat(elec.getCalculatedMyShare()).isEqualTo(396.0);
 
         // 3. Connect Gas Cylinder
         var gas = gasService.connectNewCylinder(user, 14.2, 850.0, LocalDate.now());
@@ -63,6 +63,6 @@ class SmartLedgerIntegrationTest {
 
         // 7. Macro Household Breakdown
         MacroSpendSummaryDto macro = dashboardSummaryService.getMacroBreakdown(user);
-        assertThat(macro.totalMonthlySpend()).isEqualTo(380.0 + 850.0 + 299.0 + 255.0 + 500.0);
+        assertThat(macro.totalMonthlySpend()).isEqualTo(396.0 + 850.0 + 299.0 + 255.0 + 500.0);
     }
 }
