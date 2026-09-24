@@ -57,27 +57,27 @@ export const MobilityPage: React.FC<MobilityPageProps> = ({ overview, onRefresh 
         </div>
 
         {/* Action Button & Quick KPI stats */}
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono w-full sm:w-auto">
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold text-xs hover:from-blue-600 hover:to-indigo-700 transition shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold text-xs hover:from-blue-600 hover:to-indigo-700 transition shadow-lg shadow-blue-500/20 active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Log Travel / Fuel</span>
           </button>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[110px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">TOTAL SPENT</span>
             <span className="text-base font-bold text-white font-mono tabular-nums">
               ₹{transport.totalMonthlySpend.toFixed(2)}
             </span>
           </div>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[110px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">FUEL FILL-UPS</span>
             <span className="text-base font-bold text-amber-400 font-mono tabular-nums">
               ₹{fuelSpend.toFixed(2)}
             </span>
           </div>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[110px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">TICKETS & TRANSIT</span>
             <span className="text-base font-bold text-cyan-400 font-mono tabular-nums">
               ₹{ticketSpend.toFixed(2)}

@@ -16,9 +16,9 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
     gas.history.length;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
       {/* 1. Total Monthly Outflow */}
-      <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
+      <div className="glass-panel rounded-xl p-3.5 sm:p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-2xl group-hover:bg-emerald-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-zinc-400">Total Household Spend</span>
@@ -27,7 +27,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </div>
         </div>
         <div className="flex items-baseline space-x-2">
-          <span className="text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
+          <span className="text-xl sm:text-2xl font-bold text-white tracking-tight tabular-nums font-mono truncate">
             ₹{macro.totalMonthlySpend.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </span>
         </div>
@@ -42,7 +42,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
       </div>
 
       {/* 2. Household Electricity */}
-      <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
+      <div className="glass-panel rounded-xl p-3.5 sm:p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-zinc-400">Household Electricity</span>
@@ -51,7 +51,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </div>
         </div>
         <div className="flex items-baseline space-x-2">
-          <span className="text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
+          <span className="text-xl sm:text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
             ₹{macro.electricitySpend.toFixed(2)}
           </span>
         </div>
@@ -66,7 +66,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
       </div>
 
       {/* 3. LPG Cylinder Reserve */}
-      <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
+      <div className="glass-panel rounded-xl p-3.5 sm:p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl group-hover:bg-amber-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-zinc-400">LPG Cylinder</span>
@@ -75,7 +75,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </div>
         </div>
         <div className="flex items-baseline space-x-1.5">
-          <span className={`text-2xl font-bold tracking-tight tabular-nums font-mono ${gas.active ? 'text-white' : 'text-zinc-500'}`}>
+          <span className={`text-xl sm:text-2xl font-bold tracking-tight tabular-nums font-mono ${gas.active ? 'text-white' : 'text-zinc-500'}`}>
             {gas.active
               ? (gas.forecast?.burnRateKgPerDay && gas.forecast.burnRateKgPerDay > 0
                   ? gas.forecast.daysRemaining
@@ -103,7 +103,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
       </div>
 
       {/* 4. Family Telecom Matrix */}
-      <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
+      <div className="glass-panel rounded-xl p-3.5 sm:p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover:bg-purple-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-zinc-400">Family Telecom</span>
@@ -112,7 +112,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </div>
         </div>
         <div className="flex items-baseline space-x-1.5">
-          <span className="text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
+          <span className="text-xl sm:text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
             {telecom.records.length}
           </span>
           <span className="text-xs text-zinc-400 font-medium">Active Plans</span>
@@ -132,7 +132,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
       </div>
 
       {/* 5. Transit & Mobility */}
-      <div className="glass-panel rounded-xl p-4 relative overflow-hidden group">
+      <div className="glass-panel rounded-xl p-3.5 sm:p-4 relative overflow-hidden group">
         <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/10 transition-all pointer-events-none"></div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-zinc-400">Transit & Fuel</span>
@@ -141,7 +141,7 @@ export const MacroKpiCards: React.FC<MacroKpiCardsProps> = ({ overview }) => {
           </div>
         </div>
         <div className="flex items-baseline space-x-2">
-          <span className="text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
+          <span className="text-xl sm:text-2xl font-bold text-white tracking-tight tabular-nums font-mono">
             ₹{transport.totalMonthlySpend.toFixed(2)}
           </span>
         </div>

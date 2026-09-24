@@ -52,7 +52,7 @@ export const AllocationDonutChart: React.FC<AllocationDonutChartProps> = ({ over
   };
 
   return (
-    <div className="glass-panel rounded-xl p-5 relative flex flex-col justify-between">
+    <div className="glass-panel rounded-xl p-4 sm:p-5 relative flex flex-col justify-between min-w-0 w-full">
       <div>
         <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
           <div className="flex items-center space-x-2">
@@ -67,7 +67,7 @@ export const AllocationDonutChart: React.FC<AllocationDonutChartProps> = ({ over
         </div>
 
         {/* Donut chart with centered text */}
-        <div className="relative h-52 w-full my-2">
+        <div className="relative h-48 sm:h-52 w-full my-2 min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

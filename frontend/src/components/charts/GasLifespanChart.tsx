@@ -108,8 +108,8 @@ export const GasLifespanChart: React.FC<GasLifespanChartProps> = ({ history }) =
     });
 
   return (
-    <div className="glass-panel p-5 rounded-xl space-y-4">
-      <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
+    <div className="glass-panel p-4 sm:p-5 rounded-xl space-y-4 min-w-0 w-full">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-zinc-800/80 gap-2">
         <div className="flex items-center space-x-2">
           <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-400">
             <Clock className="w-4 h-4" />
@@ -135,7 +135,7 @@ export const GasLifespanChart: React.FC<GasLifespanChartProps> = ({ history }) =
         </div>
       </div>
 
-      <div className="h-64 w-full">
+      <div className="h-56 sm:h-64 w-full min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />

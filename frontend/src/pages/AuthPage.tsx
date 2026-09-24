@@ -109,14 +109,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 py-12 relative overflow-hidden font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
+    <div className="min-h-[100dvh] bg-[#09090b] flex flex-col justify-center items-center px-3 sm:px-6 lg:px-8 py-6 sm:py-12 relative overflow-hidden font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
       {/* Background ambient decorative glows */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Brand Header */}
-      <div className="text-center mb-8 relative z-10 space-y-2">
-        <div className="inline-flex items-center space-x-2.5 px-3 py-1.5 rounded-xl bg-zinc-900/90 border border-amber-500/25 shadow-inner mb-2">
+      <div className="text-center mb-6 sm:mb-8 relative z-10 space-y-2">
+        <div className="inline-flex items-center space-x-2.5 px-3 py-1.5 rounded-xl bg-zinc-900/90 border border-amber-500/25 shadow-inner mb-1 sm:mb-2">
           <GoldenThunderLogo size="sm" />
           <span className="text-sm font-bold text-white tracking-tight">
             GauntletSmartLedger<span className="text-amber-400">™</span>
@@ -134,7 +134,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
       </div>
 
       {/* Main Authentication Card */}
-      <div className="w-full max-w-md bg-zinc-950/90 border border-zinc-800/90 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl relative z-10 space-y-6">
+      <div className="w-full max-w-md bg-zinc-950/90 border border-zinc-800/90 rounded-2xl p-4 sm:p-8 shadow-2xl backdrop-blur-xl relative z-10 space-y-5 sm:space-y-6">
         {/* Header Tabs */}
         {mode !== 'forgot' ? (
           <div className="flex rounded-xl bg-zinc-900 p-1 border border-zinc-800 font-mono text-xs">

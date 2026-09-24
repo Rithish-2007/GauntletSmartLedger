@@ -54,14 +54,14 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
         </div>
 
         {/* Controls: Quick Stats & Add Action */}
-        <div className="flex items-center space-x-3 text-xs font-mono">
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono w-full sm:w-auto">
+          <div className="flex-1 min-w-[130px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">LATEST CONSUMPTION</span>
             <span className="text-base font-bold text-cyan-400 font-mono tabular-nums">
               {latest ? `${latest.mySubmeterUnits} kWh` : '0 kWh'}
             </span>
           </div>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[130px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">LATEST BILL PAID</span>
             <span className="text-base font-bold text-white font-mono tabular-nums">
               ₹{latest?.totalEbAmount ? latest.totalEbAmount.toFixed(2) : '0.00'}
@@ -69,7 +69,7 @@ export const ElectricityPage: React.FC<ElectricityPageProps> = ({ overview, onRe
           </div>
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center space-x-1.5 px-3 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-bold transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center space-x-1.5 px-3.5 py-2 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-zinc-950 font-bold transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Log Bill</span>

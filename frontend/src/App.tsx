@@ -133,7 +133,7 @@ export const App: React.FC = () => {
       />
 
       {/* Dynamic Page Views */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         {currentPage === 'dashboard' && (
           <DashboardPage
             overview={overview}
@@ -180,22 +180,20 @@ export const App: React.FC = () => {
 
       {/* Institutional Executive Footer */}
       <footer className="border-t border-zinc-800/80 bg-zinc-950/80 mt-12 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 font-mono gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-zinc-500 font-mono gap-3 text-center sm:text-left">
           <div className="flex items-center space-x-2">
-            <Shield className="w-4 h-4 text-amber-400" />
+            <Shield className="w-4 h-4 text-amber-400 shrink-0" />
             <span>GauntletSmartLedger Autonomous Architecture • Institutional Edition</span>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-4 gap-y-2">
             <span className="flex items-center gap-1">
               <Cpu className="w-3.5 h-3.5 text-zinc-400" />
               <span>Spring Boot 3.3.4 (H2 Database)</span>
             </span>
-            <span>•</span>
             <span className="flex items-center gap-1">
               <Zap className="w-3.5 h-3.5 text-emerald-400" />
               <span>React 19 + Recharts + Geist</span>
             </span>
-            <span>•</span>
             <a
               href={isLocalHost ? 'http://localhost:8080/dashboard' : '#'}
               onClick={(e) => {

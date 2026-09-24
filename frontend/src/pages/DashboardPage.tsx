@@ -32,11 +32,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ overview, onNaviga
             Household Utility Financial Overview
           </h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
           {onOpenQuickAdd && (
             <button
               onClick={onOpenQuickAdd}
-              className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold text-xs hover:from-emerald-600 hover:to-teal-700 transition shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer font-mono"
+              className="w-full sm:w-auto flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold text-xs hover:from-emerald-600 hover:to-teal-700 transition shadow-lg shadow-emerald-500/20 active:scale-95 cursor-pointer font-mono"
             >
               <Plus className="w-4 h-4" />
               <span>Record Expense</span>
@@ -53,11 +53,11 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ overview, onNaviga
       <MacroKpiCards overview={overview} />
 
       {/* 2. Primary Charts Grid (Spend Trajectory & Capital Split) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        <div className="lg:col-span-8 min-w-0">
           <SpendAreaChart overview={overview} />
         </div>
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 min-w-0">
           <AllocationDonutChart overview={overview} />
         </div>
       </div>
@@ -71,7 +71,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ overview, onNaviga
           <span className="text-[11px] font-mono text-zinc-500">Click to inspect deep telemetry</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           {/* Module 1: Electricity */}
           <button
             onClick={() => onNavigate('electricity')}

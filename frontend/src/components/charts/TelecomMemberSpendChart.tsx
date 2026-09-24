@@ -85,7 +85,7 @@ export const TelecomMemberSpendChart: React.FC<TelecomMemberSpendChartProps> = (
   chartData.sort((a, b) => b.spend - a.spend);
 
   return (
-    <div className="glass-panel p-5 rounded-xl space-y-4">
+    <div className="glass-panel p-4 sm:p-5 rounded-xl space-y-4 min-w-0 w-full">
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
         <div className="flex items-center space-x-2">
           <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400">
@@ -105,7 +105,7 @@ export const TelecomMemberSpendChart: React.FC<TelecomMemberSpendChartProps> = (
         </span>
       </div>
 
-      <div className="h-64 w-full">
+      <div className="h-56 sm:h-64 w-full min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"

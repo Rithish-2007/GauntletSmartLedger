@@ -72,15 +72,15 @@ export const PantryPage: React.FC<PantryPageProps> = ({ overview, onRefresh }) =
         </div>
 
         {/* Action Button & Quick KPI stats */}
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono w-full sm:w-auto">
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold text-xs hover:from-amber-600 hover:to-orange-700 transition shadow-lg shadow-amber-500/20 active:scale-95 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-semibold text-xs hover:from-amber-600 hover:to-orange-700 transition shadow-lg shadow-amber-500/20 active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Add Grocery Invoice</span>
           </button>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[130px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">TOTAL EXPENSE</span>
             <span className="text-base font-bold text-white font-mono tabular-nums">
               ₹{totalSpend.toFixed(2)}
@@ -91,7 +91,7 @@ export const PantryPage: React.FC<PantryPageProps> = ({ overview, onRefresh }) =
               setTempCeiling(String(ceiling));
               setIsCeilingModalOpen(true);
             }}
-            className="bg-zinc-900/80 hover:bg-zinc-800/90 px-3 py-1.5 rounded-lg border border-zinc-800 hover:border-amber-500/40 text-left transition cursor-pointer group"
+            className="flex-1 min-w-[130px] bg-zinc-900/80 hover:bg-zinc-800/90 px-3 py-1.5 rounded-lg border border-zinc-800 hover:border-amber-500/40 text-left transition cursor-pointer group"
             title="Click to customize monthly budget ceiling"
           >
             <span className="text-zinc-500 block text-[10px] flex items-center justify-between gap-1">

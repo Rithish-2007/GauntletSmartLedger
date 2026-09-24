@@ -148,7 +148,7 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
   };
 
   return (
-    <div className="glass-panel rounded-xl p-5 relative">
+    <div className="glass-panel rounded-xl p-4 sm:p-5 relative min-w-0 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-zinc-800/80 gap-3">
         <div>
           <div className="flex items-center space-x-2">
@@ -166,10 +166,10 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
         </div>
 
         {/* Filter pills */}
-        <div className="flex items-center space-x-1.5 bg-zinc-900/80 p-1 rounded-lg border border-zinc-800 text-xs">
+        <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 bg-zinc-900/80 p-1 rounded-lg border border-zinc-800 text-[11px] sm:text-xs">
           <button
             onClick={() => setActiveMetric('total')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
+            className={`px-2 sm:px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
               activeMetric === 'total'
                 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                 : 'text-zinc-400 hover:text-zinc-200'
@@ -179,7 +179,7 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
           </button>
           <button
             onClick={() => setActiveMetric('electricity')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
+            className={`px-2 sm:px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
               activeMetric === 'electricity'
                 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
                 : 'text-zinc-400 hover:text-zinc-200'
@@ -189,7 +189,7 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
           </button>
           <button
             onClick={() => setActiveMetric('grocery')}
-            className={`px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
+            className={`px-2 sm:px-2.5 py-1 rounded-md font-medium transition-all cursor-pointer ${
               activeMetric === 'grocery'
                 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                 : 'text-zinc-400 hover:text-zinc-200'
@@ -200,9 +200,9 @@ export const SpendAreaChart: React.FC<SpendAreaChartProps> = ({ overview }) => {
         </div>
       </div>
 
-      <div className="h-64 sm:h-72 w-full mt-4">
+      <div className="h-56 sm:h-72 w-full mt-4 min-w-0">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+          <AreaChart data={trendData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
             <defs>
               <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />

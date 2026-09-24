@@ -222,13 +222,13 @@ export const TraditionalTnebCalculator: React.FC = () => {
 
         {/* Right Column: Calculation Outcome Cards */}
         <div className="lg:col-span-6 flex flex-col justify-between space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
             {/* Total Estimated Bill */}
-            <div className="bg-zinc-900/80 p-4 rounded-xl border border-zinc-800">
+            <div className="bg-zinc-900/80 p-3.5 sm:p-4 rounded-xl border border-zinc-800">
               <span className="text-[11px] text-zinc-400 font-medium block">
                 Estimated TNEB Bill
               </span>
-              <span className="text-2xl font-black text-white font-mono tabular-nums">
+              <span className="text-xl sm:text-2xl font-black text-white font-mono tabular-nums">
                 ₹{breakdown.totalBill.toFixed(2)}
               </span>
               <span className="text-[10px] text-zinc-500 font-mono block mt-0.5">
@@ -237,11 +237,11 @@ export const TraditionalTnebCalculator: React.FC = () => {
             </div>
 
             {/* Blended Effective Rate */}
-            <div className="bg-zinc-900/80 p-4 rounded-xl border border-zinc-800">
+            <div className="bg-zinc-900/80 p-3.5 sm:p-4 rounded-xl border border-zinc-800">
               <span className="text-[11px] text-zinc-400 font-medium block">
                 Effective Tariff Rate
               </span>
-              <span className="text-2xl font-black text-emerald-400 font-mono tabular-nums">
+              <span className="text-xl sm:text-2xl font-black text-emerald-400 font-mono tabular-nums">
                 ₹{breakdown.effectiveRate.toFixed(2)}
                 <span className="text-xs text-zinc-400 font-normal"> / kWh</span>
               </span>
@@ -252,8 +252,8 @@ export const TraditionalTnebCalculator: React.FC = () => {
           </div>
 
           {/* Slab Breakdown Card */}
-          <div className="bg-gradient-to-r from-cyan-950/20 to-blue-950/20 p-4 rounded-xl border border-cyan-800/30 space-y-2.5">
-            <div className="flex items-center justify-between text-xs font-mono">
+          <div className="bg-gradient-to-r from-cyan-950/20 to-blue-950/20 p-3.5 sm:p-4 rounded-xl border border-cyan-800/30 space-y-2.5">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono gap-1">
               <span className="text-white font-semibold flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 Itemized Tariff Slabs
@@ -269,7 +269,7 @@ export const TraditionalTnebCalculator: React.FC = () => {
                 <span className="text-white font-bold">₹{breakdown.fixedCharge.toFixed(2)}</span>
               </div>
               {breakdown.activeSlabs.map((slab) => (
-                <div key={slab.id} className="flex justify-between items-center py-1 border-b border-zinc-800/60">
+                <div key={slab.id} className="flex flex-wrap justify-between items-center py-1 border-b border-zinc-800/60 gap-1">
                   <span className={slab.id === 'free' ? 'text-emerald-400 font-medium' : 'text-zinc-300'}>
                     {slab.label}
                   </span>
@@ -280,7 +280,7 @@ export const TraditionalTnebCalculator: React.FC = () => {
               ))}
             </div>
 
-            <div className="flex items-center justify-between pt-1 text-[11px] font-mono text-zinc-400">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pt-1 text-[11px] font-mono text-zinc-400 gap-1">
               <span className="flex items-center gap-1 text-emerald-400">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{breakdown.categoryLabel}</span>

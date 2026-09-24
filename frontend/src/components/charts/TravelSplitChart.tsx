@@ -71,7 +71,7 @@ export const TravelSplitChart: React.FC<TravelSplitChartProps> = ({ records }) =
   ].filter((d) => d.value > 0);
 
   return (
-    <div className="glass-panel p-5 rounded-xl space-y-4">
+    <div className="glass-panel p-4 sm:p-5 rounded-xl space-y-4 min-w-0 w-full">
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
         <div className="flex items-center space-x-2">
           <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400">
@@ -91,9 +91,9 @@ export const TravelSplitChart: React.FC<TravelSplitChartProps> = ({ records }) =
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center min-w-0">
         {/* Donut Chart */}
-        <div className="sm:col-span-6 h-48 w-full flex items-center justify-center">
+        <div className="sm:col-span-6 h-48 w-full min-w-0 flex items-center justify-center">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Tooltip content={<CustomTooltip />} />

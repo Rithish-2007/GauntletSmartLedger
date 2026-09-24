@@ -46,21 +46,21 @@ export const TelecomPage: React.FC<TelecomPageProps> = ({ overview, onRefresh })
         </div>
 
         {/* Action Button & Quick KPI stats */}
-        <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono w-full sm:w-auto">
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold text-xs hover:from-purple-600 hover:to-indigo-700 transition shadow-lg shadow-purple-500/20 active:scale-95 cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center space-x-2 px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold text-xs hover:from-purple-600 hover:to-indigo-700 transition shadow-lg shadow-purple-500/20 active:scale-95 cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Add Recharge</span>
           </button>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[130px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">TOTAL COMMITMENT</span>
             <span className="text-base font-bold text-white font-mono tabular-nums">
               ₹{macro.telecomSpend.toFixed(2)}/mo
             </span>
           </div>
-          <div className="bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
+          <div className="flex-1 min-w-[130px] bg-zinc-900/80 px-3 py-1.5 rounded-lg border border-zinc-800">
             <span className="text-zinc-500 block text-[10px]">ATTENTION REQUIRED</span>
             <span className={`text-base font-bold font-mono tabular-nums ${telecom.expiringSoonCount > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
               {telecom.expiringSoonCount + telecom.expiredCount} SIMs
@@ -90,7 +90,7 @@ export const TelecomPage: React.FC<TelecomPageProps> = ({ overview, onRefresh })
               </h3>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
               <a
                 href="https://www.jio.com/selfcare/recharge/mobility/"
                 target="_blank"

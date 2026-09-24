@@ -67,19 +67,19 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-xl sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Top Navbar Row */}
-        <div className="h-16 flex items-center justify-between">
+        <div className="h-16 flex items-center justify-between gap-2">
           {/* Brand Logo & Name */}
-          <div className="flex items-center space-x-3 cursor-pointer group" onClick={() => onNavigate('dashboard')}>
+          <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer group shrink-0 min-w-0" onClick={() => onNavigate('dashboard')}>
             <GoldenThunderLogo size="md" />
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-bold text-base tracking-tight text-white font-sans group-hover:text-amber-100 transition-colors">
-                  GauntletSmartLedger<span className="text-amber-400">™</span>
+            <div className="min-w-0">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
+                <span className="font-bold text-sm sm:text-base tracking-tight text-white font-sans group-hover:text-amber-100 transition-colors truncate">
+                  <span className="hidden sm:inline">Gauntlet</span>SmartLedger<span className="text-amber-400">™</span>
                 </span>
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">
-                  EXECUTIVE
+                <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider px-1.5 sm:px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 shrink-0">
+                  EXEC
                 </span>
               </div>
               <p className="text-[11px] text-zinc-400 hidden sm:block tracking-tight font-mono">
@@ -89,20 +89,22 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Controls: Quick Add, Reset Data, Refresh, Clock, User */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-1.5 sm:space-x-3 shrink-0">
             {/* Quick Add Expense Button */}
             <button
               onClick={onOpenQuickAdd}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-mono font-bold transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
+              className="flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-mono font-bold transition-all shadow-md shadow-emerald-500/20 cursor-pointer shrink-0"
+              title="Add New Expense"
             >
-              <span className="text-sm leading-none">+</span>
-              <span>Add Expense</span>
+              <span className="text-sm leading-none font-black">+</span>
+              <span className="inline sm:hidden">Add</span>
+              <span className="hidden sm:inline">Add Expense</span>
             </button>
 
             {/* Reset Data Button */}
             <button
               onClick={onOpenResetModal}
-              className="flex items-center space-x-1 px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 text-xs font-mono transition-all cursor-pointer"
+              className="flex items-center space-x-1 px-2 sm:px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 hover:text-rose-200 text-xs font-mono transition-all cursor-pointer shrink-0"
               title="Reset or wipe database records"
             >
               <RotateCcw className="w-3.5 h-3.5 text-rose-400" />
@@ -126,7 +128,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={onRefresh}
               disabled={isLoading}
-              className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-all cursor-pointer disabled:opacity-50"
+              className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-all cursor-pointer disabled:opacity-50 shrink-0"
               title="Refresh Telemetry"
             >
               <RefreshCw className={`w-3.5 h-3.5 text-zinc-400 ${isLoading ? 'animate-spin text-emerald-400' : ''}`} />
@@ -142,7 +144,7 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
 
             {/* User profile dropdown */}
-            <div className="relative pl-2 border-l border-zinc-800">
+            <div className="relative pl-1.5 sm:pl-2 border-l border-zinc-800 shrink-0">
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="flex items-center space-x-2 focus:outline-none cursor-pointer group"
@@ -180,14 +182,14 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Dedicated Navigation Bar Row */}
-        <nav className="flex space-x-1 overflow-x-auto pb-2 scrollbar-none text-xs font-medium border-t border-zinc-800/40 pt-2">
+        <nav className="flex space-x-1.5 overflow-x-auto pb-2 scrollbar-none text-xs font-medium border-t border-zinc-800/40 pt-2 -mx-3 px-3 sm:mx-0 sm:px-0 overscroll-x-contain touch-pan-x">
           {navItems.map((item) => {
             const isActive = currentPage === item.id;
             return (
               <button
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   isActive
                     ? 'bg-zinc-800/90 text-white shadow-sm border border-zinc-700/80 font-semibold'
                     : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/60'
@@ -198,6 +200,8 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             );
           })}
+          {/* Spacer for smooth end margin on mobile touch-scroll */}
+          <div className="w-2 shrink-0 sm:hidden" />
         </nav>
       </div>
     </header>
