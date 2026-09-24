@@ -165,7 +165,9 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => {
                       setIsUserMenuOpen(false);
-                      onLogout();
+                      if (typeof onLogout === 'function') {
+                        onLogout();
+                      }
                     }}
                     className="w-full text-left px-3 py-2 text-rose-400 hover:bg-rose-500/10 transition-colors flex items-center space-x-2 cursor-pointer"
                   >

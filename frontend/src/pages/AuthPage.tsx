@@ -76,7 +76,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
         setMode('login');
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Action failed. Please try again.');
+      if (err instanceof Error) {
+        const msg = err.message && err.message !== '[object Object]' ? err.message : 'Action failed. Please try again.';
+        setError(msg);
+      } else if (typeof err === 'string' && err.trim() && err !== '[object Object]') {
+        setError(err.trim());
+      } else {
+        setError('Action failed. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }

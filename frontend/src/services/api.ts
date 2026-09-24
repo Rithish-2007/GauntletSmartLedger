@@ -77,6 +77,55 @@ export function setStoredUser(user: { id: number; fullName: string; email: strin
   }
 }
 
+export async function parseErrorResponse(res: Response, fallback: string): Promise<string> {
+  try {
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const data = await res.json();
+      if (!data) return fallback;
+      if (typeof data === 'string' && data.trim()) return data.trim();
+      if (typeof data === 'object') {
+        // Specific descriptive error string (ignoring generic status text)
+        if (typeof data.error === 'string' && data.error.trim() && data.error !== 'Bad Request' && data.error !== 'Internal Server Error') {
+          return data.error.trim();
+        }
+        // Spring Boot / standard API message
+        if (typeof data.message === 'string' && data.message.trim()) {
+          return data.message.trim();
+        }
+        // Nested error object e.g. { error: { message: '...' } }
+        if (data.error && typeof data.error === 'object') {
+          if (typeof data.error.message === 'string' && data.error.message.trim()) {
+            return data.error.message.trim();
+          }
+        }
+        // Spring validation errors array e.g. { errors: [{ defaultMessage: '...' }] }
+        if (Array.isArray(data.errors) && data.errors.length > 0) {
+          const first = data.errors[0];
+          if (typeof first === 'string' && first.trim()) return first.trim();
+          if (first && typeof first.defaultMessage === 'string' && first.defaultMessage.trim()) {
+            return first.defaultMessage.trim();
+          }
+          if (first && typeof first.message === 'string' && first.message.trim()) {
+            return first.message.trim();
+          }
+        }
+        if (typeof data.error === 'string' && data.error.trim()) {
+          return data.error.trim();
+        }
+      }
+    } else {
+      const text = await res.text();
+      if (text && text.length < 200 && !text.includes('<html') && !text.includes('<!DOCTYPE')) {
+        return text.trim();
+      }
+    }
+  } catch {
+    // fallback
+  }
+  return fallback;
+}
+
 export async function loginUser(email: string, password: string): Promise<{ id: number; fullName: string; email: string }> {
   try {
     const res = await fetch('/api/auth/login', {
@@ -89,8 +138,8 @@ export async function loginUser(email: string, password: string): Promise<{ id: 
       setStoredUser(data.user);
       return data.user;
     } else {
-      const err = await res.json().catch(() => ({ error: 'Login failed' }));
-      throw new Error(err.error || 'Invalid email or password');
+      const errorMsg = await parseErrorResponse(res, 'Invalid email or password');
+      throw new Error(errorMsg);
     }
   } catch (e: unknown) {
     const errorMsg = e instanceof Error ? e.message : 'Login failed';
@@ -123,8 +172,8 @@ export async function registerUser(fullName: string, email: string, password: st
       setStoredUser(data.user);
       return data.user;
     } else {
-      const err = await res.json().catch(() => ({ error: 'Registration failed' }));
-      throw new Error(err.error || 'Registration failed');
+      const errorMsg = await parseErrorResponse(res, 'Registration failed');
+      throw new Error(errorMsg);
     }
   } catch (e: unknown) {
     const errorMsg = e instanceof Error ? e.message : 'Registration failed';
@@ -153,8 +202,8 @@ export async function resetPasswordUser(email: string, newPassword: string): Pro
       const data = await res.json();
       return data.message || 'Password reset successfully.';
     } else {
-      const err = await res.json().catch(() => ({ error: 'Password reset failed' }));
-      throw new Error(err.error || 'Password reset failed');
+      const errorMsg = await parseErrorResponse(res, 'Password reset failed');
+      throw new Error(errorMsg);
     }
   } catch (e: unknown) {
     const errorMsg = e instanceof Error ? e.message : 'Password reset failed';
