@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck, CheckCircle2, KeyRound, ArrowLeft, Check } from 'lucide-react';
-import { loginUser, registerUser, resetPasswordUser } from '../services/api';
+import { loginUser, registerUser, resetPasswordUser, seedDemoData, setStoredUser } from '../services/api';
 import type { UserSummary } from '../types/analytics';
 import { GoldenThunderLogo } from '../components/GoldenThunderLogo';
 
@@ -95,14 +95,18 @@ export const AuthPage: React.FC<AuthPageProps> = ({ onAuthSuccess }) => {
     setIsLoading(true);
     try {
       const user = await loginUser('demo@smartledger.local', 'demo123');
+      await seedDemoData();
       onAuthSuccess(user);
     } catch {
-      // Fallback
-      onAuthSuccess({
+      // Fallback for offline or static deployments
+      const demoUser = {
         id: 1,
         fullName: 'Rithish Kumar',
         email: 'demo@smartledger.local',
-      });
+      };
+      setStoredUser(demoUser);
+      await seedDemoData();
+      onAuthSuccess(demoUser);
     } finally {
       setIsLoading(false);
     }

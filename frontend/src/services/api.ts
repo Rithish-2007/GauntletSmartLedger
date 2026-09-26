@@ -53,6 +53,204 @@ export const EMPTY_DATA: OverviewData = {
   },
 };
 
+export const SAMPLE_DEMO_DATA: OverviewData = {
+  macro: {
+    electricitySpend: 542.14,
+    gasSpend: 850.0,
+    telecomSpend: 1217.0,
+    transportSpend: 295.0,
+    grocerySpend: 2180.0,
+    totalMonthlySpend: 5084.14,
+    percentageDistribution: {
+      Grocery: 42.9,
+      Telecom: 23.9,
+      Electricity: 10.7,
+      Gas: 16.7,
+      Transport: 5.8,
+    },
+  },
+  user: {
+    id: 1,
+    fullName: 'Rithish Kumar',
+    email: 'demo@smartledger.local',
+  },
+  electricity: {
+    history: [
+      {
+        recordId: 102,
+        billingMonth: '2026-09',
+        masterEbUnits: 420.0,
+        totalEbAmount: 1265.0,
+        isShared: true,
+        mySubmeterUnits: 180.0,
+        otherSubmeterUnits: 240.0,
+        calculatedMyShare: 542.14,
+        paidDate: '2026-09-15',
+        utilityType: 'ELECTRICITY',
+      },
+      {
+        recordId: 101,
+        billingMonth: '2026-08',
+        masterEbUnits: 350.0,
+        totalEbAmount: 950.0,
+        isShared: true,
+        mySubmeterUnits: 140.0,
+        otherSubmeterUnits: 210.0,
+        calculatedMyShare: 380.0,
+        paidDate: '2026-08-15',
+        utilityType: 'ELECTRICITY',
+      },
+    ],
+    latest: {
+      recordId: 102,
+      billingMonth: '2026-09',
+      masterEbUnits: 420.0,
+      totalEbAmount: 1265.0,
+      isShared: true,
+      mySubmeterUnits: 180.0,
+      otherSubmeterUnits: 240.0,
+      calculatedMyShare: 542.14,
+      paidDate: '2026-09-15',
+      utilityType: 'ELECTRICITY',
+    },
+  },
+  gas: {
+    history: [
+      {
+        recordId: 202,
+        recordDate: '2026-08-06',
+        cylinderWeightKg: 14.2,
+        bookingCost: 850.0,
+        connectedDate: '2026-08-06',
+        burnRatePerDay: 0.38,
+        isActive: true,
+      },
+      {
+        recordId: 201,
+        recordDate: '2026-07-01',
+        cylinderWeightKg: 14.2,
+        bookingCost: 850.0,
+        connectedDate: '2026-07-01',
+        finishedDate: '2026-08-05',
+        burnRatePerDay: 0.40,
+        isActive: false,
+      },
+    ],
+    active: {
+      recordId: 202,
+      recordDate: '2026-08-06',
+      cylinderWeightKg: 14.2,
+      bookingCost: 850.0,
+      connectedDate: '2026-08-06',
+      burnRatePerDay: 0.38,
+      isActive: true,
+    },
+    forecast: {
+      connectedDate: '2026-08-06',
+      cylinderWeightKg: 14.2,
+      burnRateKgPerDay: 0.38,
+      predictedDepletionDate: '2026-09-30',
+      daysRemaining: 4,
+      percentageRemaining: 15,
+      refillAlert: true,
+    },
+  },
+  telecom: {
+    records: [
+      {
+        recordId: 301,
+        familyMemberName: 'Rithish (Self)',
+        serviceProvider: 'Jio',
+        planAmount: 719.0,
+        rechargeDate: '2026-08-01',
+        validityDays: 84,
+        expiryDate: '2026-10-24',
+        utilityType: 'TELECOM',
+      },
+      {
+        recordId: 302,
+        familyMemberName: 'Mom',
+        serviceProvider: 'Airtel',
+        planAmount: 299.0,
+        rechargeDate: '2026-08-27',
+        validityDays: 28,
+        expiryDate: '2026-09-24',
+        utilityType: 'TELECOM',
+      },
+      {
+        recordId: 303,
+        familyMemberName: 'Dad',
+        serviceProvider: 'BSNL',
+        planAmount: 199.0,
+        rechargeDate: '2026-08-10',
+        validityDays: 30,
+        expiryDate: '2026-09-09',
+        utilityType: 'TELECOM',
+      },
+    ],
+    expiringSoonCount: 1,
+    expiredCount: 1,
+  },
+  transport: {
+    records: [
+      {
+        recordId: 401,
+        commuteType: 'FUEL',
+        personName: 'Rithish',
+        originPoint: 'Home',
+        destinationPoint: 'College Campus',
+        distanceKm: 45.0,
+        litersFilled: 2.5,
+        totalFareCost: 255.0,
+        mileageCalculated: 18.0,
+        costPerKm: 5.67,
+        entryDate: '2026-09-18',
+      },
+      {
+        recordId: 402,
+        commuteType: 'PUBLIC_TICKET',
+        personName: 'Rithish',
+        originPoint: 'Home',
+        destinationPoint: 'City Center',
+        distanceKm: 25.0,
+        totalFareCost: 40.0,
+        costPerKm: 1.60,
+        entryDate: '2026-09-20',
+      },
+    ],
+    totalMonthlySpend: 295.0,
+  },
+  grocery: {
+    records: [
+      {
+        recordId: 501,
+        storeName: 'Reliance Fresh',
+        category: 'ESSENTIAL_STAPLE',
+        purchaseDate: '2026-09-10',
+        totalAmount: 1450.0,
+        receiptNotes: 'Rice 10kg, Wheat flour 5kg, Dal 2kg',
+      },
+      {
+        recordId: 502,
+        storeName: 'Daily Dairy',
+        category: 'DAIRY_PRODUCE',
+        purchaseDate: '2026-09-15',
+        totalAmount: 380.0,
+        receiptNotes: 'Milk, curd, butter',
+      },
+      {
+        recordId: 503,
+        storeName: 'Sweet Shop',
+        category: 'SNACKS_DISCRETIONARY',
+        purchaseDate: '2026-09-18',
+        totalAmount: 350.0,
+        receiptNotes: 'Gulab jamun, mixture',
+      },
+    ],
+    totalMonthlySpend: 2180.0,
+  },
+};
+
 const AUTH_USER_KEY = 'smartledger_auth_user';
 
 export function getStoredUser(): { id: number; fullName: string; email: string } | null {
@@ -189,6 +387,11 @@ export async function loginUser(email: string, password: string): Promise<{ id: 
         const userSummary = { id: localMatch.id, fullName: localMatch.fullName, email: localMatch.email };
         setStoredUser(userSummary);
         return userSummary;
+      }
+      if (normalizedEmail === 'demo@smartledger.local' && password === 'demo123') {
+        const demoSummary = { id: 1, fullName: 'Rithish Kumar', email: 'demo@smartledger.local' };
+        setStoredUser(demoSummary);
+        return demoSummary;
       }
       throw new Error(errorMsg);
     }
@@ -396,6 +599,10 @@ function loadLocalData(): OverviewData {
     }
   } catch (e) {
     console.warn('Unable to read from localStorage', e);
+  }
+  const user = getStoredUser();
+  if (user && user.email.toLowerCase() === 'demo@smartledger.local') {
+    return saveLocalData(JSON.parse(JSON.stringify(SAMPLE_DEMO_DATA)));
   }
   return JSON.parse(JSON.stringify(EMPTY_DATA));
 }
@@ -858,7 +1065,7 @@ export async function seedDemoData(): Promise<OverviewData> {
   } catch (err) {
     console.warn('Backend seed-demo error, initializing baseline sample locally', err);
   }
-  return saveLocalData(JSON.parse(JSON.stringify(EMPTY_DATA)));
+  return saveLocalData(JSON.parse(JSON.stringify(SAMPLE_DEMO_DATA)));
 }
 
 export function calculateTnebBill(units: number): number {

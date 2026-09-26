@@ -1,0 +1,258 @@
+[P] <TITLE OF THE PBL>
+[P] A PROJECT BASED LEARNING (PBL) REPORT
+[P] Submitted by
+[P] STUDENT 1 NAME
+[P] STUDENT 2 NAME
+[P] Submitted in partial fulfilment of the requirements for the
+[P] Project-Based Learning component of Java Programming
+[P] BACHELOR OF ENGINEERING
+[P] in
+[P] COMPUTER SCIENCE AND ENGINEERING
+[P] 2924555267403
+[P] CHENNAI INSTITUTE OF TECHNOLOGY
+[P] 355092099171
+[P] (Autonomous)
+[P] Affiliated to Anna University, Chennai
+[P] October - 2026
+[P] Vision of the Institute:
+[P] 923925295327To be an eminent centre for Academia, Industry and Research by imparting knowledge, relevant practices and inculcating human values to address global challenges through novelty and sustainability.To be an eminent centre for Academia, Industry and Research by imparting knowledge, relevant practices and inculcating human values to address global challenges through novelty and sustainability.
+[P] Mission of the Institute:
+[P] 918210175989IM1. To creates next generation leaders by effective teaching learningmethodologies and in still Scientifics park in them to meet the global challenges.IM2. To transform lives through deployment of emerging technology, novelty and sustainability.IM3. To inculcate human values and ethical principles to cater the societal needs.IM4. To contributes towards the research ecosystem by providing a suitable,IM1. To creates next generation leaders by effective teaching learningmethodologies and in still Scientifics park in them to meet the global challenges.IM2. To transform lives through deployment of emerging technology, novelty and sustainability.IM3. To inculcate human values and ethical principles to cater the societal needs.IM4. To contributes towards the research ecosystem by providing a suitable,
+[P] DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+[P] Vision of the Department:
+[P] 953135168408To Excel in the emerging areas of Computer Science and Engineering by imparting knowledge, relevant practices and inculcating human values to transform the students as potential resources to contribute innovatively through advanced computing in real time situations.To Excel in the emerging areas of Computer Science and Engineering by imparting knowledge, relevant practices and inculcating human values to transform the students as potential resources to contribute innovatively through advanced computing in real time situations.
+[P] 921385237477Mission of the Department:DM1. To provide strong fundamentals and technical skills for Computer Science applications through effective teaching learning methodologies.DM2. To transform lives of the students by nurturing ethical values, creativity and novelty to become Entrepreneurs and establish start-ups.DM3. To habituate the students to focus on sustainable solutions to improve thequality of life and the welfare of the society.Mission of the Department:DM1. To provide strong fundamentals and technical skills for Computer Science applications through effective teaching learning methodologies.DM2. To transform lives of the students by nurturing ethical values, creativity and novelty to become Entrepreneurs and establish start-ups.DM3. To habituate the students to focus on sustainable solutions to improve thequality of life and the welfare of the society.
+[P] CHENNAI INSTITUTE OF TECHNOLOGY, CHENNAI
+[P] (Autonomous)
+[P] Affiliated to Anna University, Chennai
+[P] BONAFIDE CERTIFICATE
+[P] This is to certify that the Project–Based Learning report titled “[PROJECT TITLE]” is a Bonafide record of work carried out by [Student Name(s), Register No(s).] of the Department of Computer Science and Engineering, Chennai Institute of Technology, as part of the continuous, mentor–guided Project-Based Learning (PBL) component of the Java Programming course during the academic year [2026–2027] under my supervision.
+[P] SIGNATURE
+[P] Dr. S. Pavithra M.E., Ph. D
+[P] HEAD OF THE DEPARTMENT
+[P] Professor and Head,
+[P] Department of Computer Science and Engineering
+[P] Chennai Institute of Technology Chennai - 69
+[P] SIGNATURE
+[P] GUIDE NAME
+[P] Supervisor
+[P] Designation
+[P] Department of Computer Science and Engineering
+[P] Chennai Institute of Technology Chennai - 69
+[P] Submitted for the final review held on …………………….
+[P] INTERNAL EXAMINER
+[P] DECLARATION
+[P] I/We jointly declare that the PBL report on “TITLE” is the result of original work done by us and best of our knowledge, similar work has not beensubmittedto“ANNAUNIVERSITYCHENNAI”forthe requirement of Degree of BACHELOR OF ENGINEERING. This PBL report is submitted on the partial fulfilment of the requirement of theawardofDegreeofCOMPUTERSCIENCEAND ENGINEERING.
+[P] Signature
+[P] 1185672300262STUDENT NAMESTUDENT NAME
+[P] STUDENT NAME
+[P] Place: Chennai Date:
+[P] ACKNOWLEDGEMENT
+[P] We wish to express our sincere gratitude to our honourable Chairman
+[P] SHRI.P. SRIRAM for providing immense facilities at our institution.
+[P] We are very proudly rendering our thanks to our Principal Dr.A.RAMESH M.E, Ph.D., for the facilities and the encouragement given by him to the progress and completion of our project.
+[P] 11856721396787We proudly render our immense gratitude to the Head of the DepartmentDr.S.PAVITHRAM.E,Ph.D.,forhereffectiveleadership, encouragement and guidance in the project.We would like to extend ou rthanks to t h e Project Co-ordinatorWe proudly render our immense gratitude to the Head of the DepartmentDr.S.PAVITHRAM.E,Ph.D.,forhereffectiveleadership, encouragement and guidance in the project.We would like to extend ou rthanks to t h e Project Co-ordinatorWe would like to express special thanks of gratitude to our Dean Dr. V. SRINIVASA RAO, M.E., Ph.D., who has been the key spring of motivation to us throughout the completion of our course and project work.
+[P] <NAME, DESIGNATION>., Department of Computer Science and Engineering, for their valuable suggestions throughout this project.
+[P] We wish to acknowledge the help received from the class advisors
+[P] <NAME, DESIGNATION>., of the Department of Computer Science and Engineering and others for providing valuable suggestions and for the successful completion of the project.
+[P] NAME 1REG.NO
+[P] NAME 2REG.NO
+[P] ABSTRACT
+[P] single paragraph. State the problem being addressed, the proposed Java-based solution, the technologies and programming concepts used, the major modules/features developed, the database or JDBC approach if applicable, and the key outcome with a measurable result. Conclude with the main takeaway or benefit of the developed application. Do not cite references here
+[P] Abstract should be a synopsis of the project report typed double line spacing, Font Style Times New Roman and Font Size 14.
+[P] 1185672252630Keywords: [keyword 1, keyword 2, keyword 3, keyword 4, keyword 5: Max5 Keywords]Keywords: [keyword 1, keyword 2, keyword 3, keyword 4, keyword 5: Max5 Keywords][Maximum 150-200 words]
+[P] TABLE OF CONTENTS
+[TABLE START]
+CHAPTER | TITLE | PAGE
+NO. | ABSTRACT | NO.iii
+ | LIST OF TABLES LIST OF FIGURESLIST OF ABBREVIATIONS | xvi xviii xxvii
+1 | INTRODUCTIONBACKGROUNDDRIVING QUESTION | 
+2 | OBJECTIVESSCOPE AND LIMITATIONCONCEPT EXPLORATION | 
+ | 2.1 RELATED APPROACHES | 
+[TABLE END]
+[P] TRADITIONAL JAVA APPLICATION APPROACH
+[P] JAVA FRAMEWORK-BASED APPROACH
+[P] 2.2 SUMMARY TABLE
+[P] LIST OF TABLES
+[P] TABLE
+[P] NO.
+[P] TITLEPAGE NO.
+[P] Weekly PBL progress log .17
+[P] Hardware and software requirements 4.3
+[P] 4.4
+[P] 5.1
+[P] 5.2
+[P] 5.3
+[P] Model evaluation results
+[P] LIST OF FIGURES
+[TABLE START]
+FIGURE NO. | TITLE | PAGE NO.
+3.1 | System architecture diagram | 12
+6.1 | [Screenshots ] | 15
+[TABLE END]
+[P] 1185672265417
+[P] LIST OF ABBREVIATIONS
+[P] AbbreviationFull Form
+[P] JDKJava Development Ki
+[P] OOPObject-Oriented Programming
+[P] JDBCJava Database Connectivity
+[P] 1185672281292
+[P] CHAPTER 1
+[P] INTRODUCTION
+[P] Suggested length: 1.5–2 pages
+[P] BACKGROUND
+[P] 1388744146140Set the real-world context. What problem area does this sit in, and why does it matter? 2–3 short paragraphs, no citations dump — save the detailed literature for Chapter 2.Set the real-world context. What problem area does this sit in, and why does it matter? 2–3 short paragraphs, no citations dump — save the detailed literature for Chapter 2.
+[P] DRIVING QUESTION
+[P] 1388744168294Guidance: PBL is organised around an open, investigable question rather than a fixed spec handed down at the start — that's the main difference from a Core Course Project. State the question your team set out to answer through the project, then narrow it to the specific task.Guidance: PBL is organised around an open, investigable question rather than a fixed spec handed down at the start — that's the main difference from a Core Course Project. State the question your team set out to answer through the project, then narrow it to the specific task.
+[P] [e.g. ““Can we develop a Java-based application that can efficiently manage
+[P] 1185672109362student records and reduce the difficulties of manual record management?” Follow with 2–3 sentences narrowing this into a concrete, build able Java task, such as identifying the required modules, designing classes using OOP concepts, implementing database connectivity using JDBC, and testing theapplication's functionality..]student records and reduce the difficulties of manual record management?” Follow with 2–3 sentences narrowing this into a concrete, build able Java task, such as identifying the required modules, designing classes using OOP concepts, implementing database connectivity using JDBC, and testing theapplication's functionality..]
+[P] OBJECTIVES
+[P] 138874450592Guidance: List both technical and learning objectives — a PBL report is assessed on process and skill growth, not only the artefact. 4–6 bullets, each starting with an action verb.Guidance: List both technical and learning objectives — a PBL report is assessed on process and skill growth, not only the artefact. 4–6 bullets, each starting with an action verb.
+[P] To analyze the real-world problem and identify the requirements for the Java-based application.
+[P] To design and develop a Java application using appropriate OOP concepts, classes, interfaces, and modules.
+[P] To implement database connectivity and CRUD operations using JDBC, wherever applicable.
+[P] To test and debug the application to verify its functionality, reliability, and error handling.
+[P] To reflect on the team's approach, division of work, and what the process taught each member.
+[P] SCOPE AND LIMITATIONS
+[P] [State what the project does and does not cover — e.g. dataset size, deployment environment, generalisability. }
+[P] CHAPTER 2
+[P] CONCEPT EXPLORATION
+[P] Suggested length: 2 pages
+[P] Guidance: This is the technical part of the PBL — what did the team read and learn before starting the Java project? Summarise 5–8 sources (Java documentation, technical articles, or standard API documentation), group them by topic, and explain what approach your team selected and why.
+[P] RELATED APPROACHES
+[P] Traditional Java Application Approach
+[P] [Core Java / JDBC / Java Collections], [development approach], [key outcome/result].
+[P] Java Framework-Based Approach
+[P] [Spring Boot / Hibernate / REST API], [development approach], [key outcome/result].
+[P] SUMMARY TABLE
+[TABLE START]
+Ref. | Approach | Reported Result
+[1] |  | 
+[2] |  | 
+[TABLE END]
+[P] WHAT THIS TOLD US
+[P] [2–4 sentences: based on this exploration, which approach did the team decide to start with in Iteration 1 (Chapter 4), and why? This is the bridge from theory into the team's own build.]
+[P] CHAPTER 3
+[P] PROJECT PLANNING AND TEAM ORGANISATION
+[P] Suggested length: 1.5–2 pages
+[P] 1388744225477Guidance: This chapter is unique to a PBL report as It shows the mentor-reviewed, week-by-week process behind the final result.Guidance: This chapter is unique to a PBL report as It shows the mentor-reviewed, week-by-week process behind the final result.
+[P] WEEKLY PBL PROGRESS LOG
+[P] 138874451451Guidance: Update this table after every mentor review, not all at once at the end. Add or remove rows to match your actual PBL duration.Guidance: Update this table after every mentor review, not all at once at the end. Add or remove rows to match your actual PBL duration.
+[P] Requirements
+[P] Table 3.1 <title of the table>
+[TABLE START]
+Week | Milestone / Task | Work Done | Mentor Remarks
+1–2 | Problem statement, Objective, Time plan of the project, Literature review and Technicalbackground. | [summary] | [remarks]
+3–4 | Data Handling, Methodology design. | [summary] | [remarks]
+5–7 | Implementation & Testing | [summary] | [remarks]
+8–10 | Presentation with demo | [summary] | [remarks]
+11–12 | Final testing and documentation | [summary] | [remarks]
+[TABLE END]
+[P] Table 3.2 <title of the table>
+[TABLE START]
+Category | Requirement
+Processor / RAM | [e.g. Intel i5 / 8 GB RAM (minimum)]
+Programming language | Java 17 or Java 21
+Libraries / frameworks | Spring Boot, Spring Data JPA, Hibernate, Maven/Gradle, Lombok
+Database | MySQL / PostgreSQL
+Development environment | IntelliJ IDEA / Eclipse / VS Code
+Version control | [e.g. Git/GitHub repository]
+[TABLE END]
+[P] FEASIBILITY
+[P] [One short paragraph on why this is achievable within the PBL timeframe and available resources, given the weekly plan above.]
+[P] CHAPTER 4
+[P] ITERATIVE DESIGN AND DEVELOPMENT
+[P] Suggested length: 3–4 pages — this is the core PBL chapter
+[P] Guidance: A PBL report instead shows the build-test-learn cycle — what you tried first, what the results or mentor feedback told you, and how that shaped the next iteration. Keep each iteration honest, including what didn't work.
+[P] SYSTEM ARCHITECTURE
+[P] User Input → Validation → Java Processing → Data Handling → Output
+[P] [Insert Figure 4.1 — System Architecture Diagram, include figure name at the bottom of the figure]
+[P] The system accepts user input, validates it, processes the data using Java, and displays the required output.
+[P] BASELINE
+[P] The first version implemented basic functionality using classes, objects, methods, conditions, and loops. It worked correctly but had limited validation and a simple structure.
+[P] PROJECT REFINEMENT
+[P] The application was improved using OOP concepts, exception handling, collections, and modular classes, making the system more reliable and user-friendly.
+[P] FINAL APPROACH
+[P] The final application uses a modular and object-oriented design with encapsulation, inheritance, polymorphism, abstraction, exception handling, and collections. This improves maintainability and reusability.
+[P] TESTING AND EXECUTION
+[P] The application was tested for compilation, functionality, input validation, exception handling, and output correctness. The testing confirmed that the application works as expected.
+[P] CHAPTER 5 IMPLEMENTATION
+[P] Suggested length: 2–3 pages
+[P] MODULE DESCRIPTION
+[P] The Java application is divided into different modules to make the system simple and organized.
+[P] Input Module: Collects the required information from the user.
+[P] Processing Module: Processes the input using Java classes, methods, conditions, and loops.
+[P] Data Management Module: Stores and manages data using collections, files, or a database, if applicable.
+[P] Validation Module: Checks user input and handles invalid data.
+[P] Output Module: Displays the processed results to the user.
+[P] KEY CODE SNIPPETS
+[P] Include only 2–4 important Java code snippets, such as:
+[P] Class and object creation
+[P] Main application logic
+[P] Exception handling
+[P] Collection or file/database operation
+[P] [Paste a short, essential Java code snippet here]
+[P] Full source code can be included in the Appendix.
+[P] USER INTERFACE / DEMO
+[P] Include screenshots of the Java application's execution, input screen, and output. Each screenshot should have a short caption explaining what is displayed.
+[P] [Insert Screenshot 5.1 — User Input]
+[P] [Insert Screenshot 5.2 — Application Output]
+[P] CHAPTER 6
+[P] RESULTS AND DISCUSSION
+[P] Suggested length: 3 pages
+[P] EVALUATION METRICS
+[P] Guidance: State which metrics were used and why they fit this task, e.g. test-case pass rate and code coverage for functional correctness, response time / memory usage for performance, or usability checks for a GUI application.
+[P] [List the metrics chosen — e.g. % of unit tests passed (JUnit), code coverage %, execution time, JVM memory usage, Java Collection efficiency, exception handling, and defects identified during successive testing phases.
+[P] — and justify why each fits this Java application.]
+[P] RESULTS ACROSS ITERATIONS
+[P] Guidance: Showing all iterations, not just the final build, is what makes the results section read as a PBL outcome.
+[P] Table 6.1 <Title of the table>
+[TABLE START]
+Version | Test Cases Passed | Code Coverage | Performance (avg. response time)
+baseline | [value] | [value] | [value]
+Project Refinement | [value] | [value] | [value]
+Final approach | [value] | [value] | [value]
+[TABLE END]
+[P] Guidance: Insert a test-report screenshot, code-coverage report, performance graph, or before/after UI comparison as Figure 6.1, with a caption.
+[P] DISCUSSION
+[P] Guidance: Interpret the results — don't just restate the numbers. Where did the application perform well or poorly, and why (in terms of design, algorithm choice, or implementation)? Explain what changed between iterations and why it mattered.
+[P] LIMITATIONS
+[P] Guidance: Be honest about small test datasets, limited edge-case coverage, no concurrency/load testing, or scope narrowing. Examiners rate this well when done candidly.
+[P] [Honest limitations — e.g. limited test inputs, no multi-user/concurrency testing, hardcoded configuration values, features descoped due to time constraints.]
+[P] CHAPTER 7
+[P] TEAM REFLECTION AND LEARNING OUTCOMES
+[P] Suggested length: 1.5–2 pages
+[P] Guidance: PBL specifically assesses the learning process and teamwork, not just the artefact. Write it honestly; generic reflection reads poorly to mentors who sat through the reviews.
+[P] INDIVIDUAL REFLECTIONS
+[P] Guidance: 2–4 sentences per member: what you personally worked on, one thing you learned, and one challenge you faced.
+[P] [Name 1]: [reflection]
+[P] [Name 2]: [reflection]
+[P] [Name 3]: [reflection]
+[P] TEAM LEARNING
+[P] [What worked well in how the team divided work and made decisions? What would you do differently if you restarted this PBL cycle? Reference specific mentor feedback that changed your direction, if any.]
+[P] COURSE OUTCOMES — EVIDENCE SUMMARY
+[P] [For each CO listed in the front matter, give one line of concrete evidence from this project — e.g. (teamwork): weekly log in Table 3.1 shows task rotation across all three iterations; (technical skill): JDBC integration and exception handling implemented in Iteration 2.]
+[P] CHAPTER 8 CONCLUSION AND FUTURE SCOPE
+[P] Suggested length: 1 page
+[P] CONCLUSION
+[P] Write one short paragraph of 5–7 sentences summarizing the Java project, major features, key results, and achievement of objectives.
+[P] FUTURE SCOPE:
+[P] Provide 4–6 bullet points, with each point limited to 1–2 sentences.
+[P] Keep the entire chapter concise and within approximately one page.
+[P] Focus on what was developed, what was achieved, and how the Java project can be improved in the future.
+[P] REFERENCES
+[P] 138874450181Guidance: Use IEEE numbered style, matching in-text citation numbers to this list, in order of first appearance. 8–15 references is typical for a small-scale PBL report. Include the dataset source as a reference too.Guidance: Use IEEE numbered style, matching in-text citation numbers to this list, in order of first appearance. 8–15 references is typical for a small-scale PBL report. Include the dataset source as a reference too.
+[P] [1] Lundberg, Scott M., and Su-In Lee, “A Unified Approach to Interpreting Model Predictions,” Advances in Neural Information Processing Systems, vol. 30, pp. 4765–4774, 2017. (example )
+[P] [2]
+[P] [Add remaining references in the same numbered format.]
+[P] APPENDIX
+[P] 138874450182Guidance: Appendix pages do not count toward the 20-page limit. Use for full code listings, extra result tables, the complete weekly log, or a project codeGuidance: Appendix pages do not count toward the 20-page limit. Use for full code listings, extra result tables, the complete weekly log, or a project code
+[P] FULL SOURCE CODE
+[P] Complete weekly PBL log (if longer than Table 3.1) and mentor sign-offs.
+[P] SELF AND PEER ASSESSMENT
+[P] 138874451487Guidance: Many PBL courses require each member to rate their own and teammates' contribution — keep this in the appendix, not the main chapters.Guidance: Many PBL courses require each member to rate their own and teammates' contribution — keep this in the appendix, not the main chapters.
+[TABLE START]
+Team Member | Self-Rated Contribution (%) | Peer-Rated Contribution (%) | Remarks
+[Name 1] | [%] | [%] | [remarks]
+[Name 2] | [%] | [%] | [remarks]
+[TABLE END]
